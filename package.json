@@ -11,6 +11,7 @@
     "deploy": "npm run build && npx wrangler pages deploy dist --project-name=dm-associates --commit-dirty=true"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.2",
     "@tailwindcss/vite": "^4.3.2",
     "html2pdf.js": "^0.14.0",
     "lucide-react": "^1.24.0",

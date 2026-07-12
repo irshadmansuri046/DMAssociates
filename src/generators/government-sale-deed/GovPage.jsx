@@ -1,6 +1,6 @@
 import React from 'react';
 import { GOVT, govPageShell } from './styles';
-import { WATERMARK_TEXT } from '../../constants/version';
+import { APP_NAME, WATERMARK_TEXT } from '../../constants/version';
 import { toGuDigits } from '../../utils/aalekhDocumentUtils';
 
 /** Centered Gujarati page number — matches scanned govt deed (no modern Doc No header). */
@@ -22,9 +22,28 @@ export function GovPageNumber({ n }) {
   );
 }
 
+function BrandPageFooter({ compact = false }) {
+  return (
+    <div
+      style={{
+        marginTop: compact ? '8px' : '12px',
+        paddingTop: '10px',
+        flexShrink: 0,
+        textAlign: 'center',
+        fontSize: '8.5pt',
+        color: '#4b5563',
+        borderTop: '0.5px solid #d1d5db',
+        lineHeight: 1.4,
+      }}
+    >
+      Created by : {APP_NAME}
+    </div>
+  );
+}
+
 /**
  * Government-style A4 page — wide margins, light watermark.
- * Pass `footer` to pin a signature strip to the bottom of the page (avoids mid-page float + huge blank).
+ * Pass `footer` to pin a signature strip above the brand page footer.
  */
 export function GovPage({ pageNum, children, footer = null, style }) {
   return (
@@ -76,11 +95,14 @@ export function GovPage({ pageNum, children, footer = null, style }) {
         }}
       >
         <GovPageNumber n={pageNum} />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ flex: '0 1 auto' }}>{children}</div>
-          {footer ? (
-            <div style={{ marginTop: 'auto', paddingTop: '16px', flexShrink: 0 }}>{footer}</div>
-          ) : null}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <div style={{ flex: '1 1 auto' }}>{children}</div>
+          <div style={{ marginTop: 'auto', flexShrink: 0 }}>
+            {footer ? (
+              <div style={{ marginTop: '16px', paddingTop: '8px' }}>{footer}</div>
+            ) : null}
+            <BrandPageFooter compact={Boolean(footer)} />
+          </div>
         </div>
       </div>
     </div>

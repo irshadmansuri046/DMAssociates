@@ -11,7 +11,7 @@ export default function StepPartyDetails({ errors = {} }) {
   const { formData, updateField, addListItem, removeListItem } = useDeedForm();
   const { t, language } = useLanguage();
   const locale = language === 'gu' ? 'gu' : 'en';
-  const roles = getPartyRoles(formData.documentType);
+  const roles = getPartyRoles(formData.documentType, formData.templateId);
   const req = getDocumentRequirements(formData.documentType);
 
   const sellers = formData.parties.sellers || [];

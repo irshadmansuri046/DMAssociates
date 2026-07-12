@@ -114,8 +114,22 @@ export const DOCUMENT_PARTY_ROLES = {
   },
 };
 
-export function getPartyRoles(documentType) {
-  return DOCUMENT_PARTY_ROLES[documentType] || DOCUMENT_PARTY_ROLES.sale_deed;
+export function getPartyRoles(documentType, templateId) {
+  const roles = DOCUMENT_PARTY_ROLES[documentType] || DOCUMENT_PARTY_ROLES.sale_deed;
+  if (documentType === 'sale_deed' && templateId === 'builder') {
+    return {
+      ...roles,
+      first: { gu: 'બિલ્ડર / પ્રમોટર (વેચાણ આપનાર)', en: 'Builder / Promoter (Seller)' },
+      second: { gu: 'એલોટી / ખરીદદાર (વેચાણ લેનાર)', en: 'Allottee / Buyer' },
+      coverFirst: { gu: 'પ્રમોટર / બિલ્ડર', en: 'Promoter / Builder' },
+      coverSecond: { gu: 'એલોટી / ખરીદદાર', en: 'Allottee / Buyer' },
+      preambleTitle: {
+        gu: '-: વેચાણ દસ્તાવેજ (પ્રમોટર → ખરીદદાર) :-',
+        en: '-: Sale Deed (Promoter → Buyer) :-',
+      },
+    };
+  }
+  return roles;
 }
 
 export function getPreambleTitle(documentType, locale = 'gu') {

@@ -1,0 +1,440 @@
+[
+  {
+    "name_en": "Ahmedabad",
+    "talukas": [
+      "Ahmedabad",
+      "Bavla",
+      "Daskroi",
+      "Detroj-Rampura",
+      "Dhandhuka",
+      "Dholera",
+      "Dholka",
+      "Mandal",
+      "Sanand",
+      "Viramgam"
+    ]
+  },
+  {
+    "name_en": "Amreli",
+    "talukas": [
+      "Amreli",
+      "Babra",
+      "Bagasara",
+      "Dhari",
+      "Jafrabad",
+      "Khambha",
+      "Kunkavav vadia",
+      "Lathi",
+      "Lilia",
+      "Rajula",
+      "Savarkundla"
+    ]
+  },
+  {
+    "name_en": "Anand",
+    "talukas": [
+      "Anand",
+      "Anklav",
+      "Borsad",
+      "Khambhat",
+      "Petlad",
+      "Sojitra",
+      "Tarapur",
+      "Umreth"
+    ]
+  },
+  {
+    "name_en": "Aravalli",
+    "talukas": [
+      "Bayad",
+      "Bhiloda",
+      "Dhansura",
+      "Malpur",
+      "Meghraj",
+      "Modasa",
+      "Shamlaji",
+      "Sathamba"
+    ]
+  },
+  {
+    "name_en": "Banaskantha",
+    "talukas": [
+      "Amirgadh",
+      "Dhanera",
+      "Deesa",
+      "Danta",
+      "Dantiwada",
+      "Palanpur",
+      "Vadgam",
+      "Kankrej(Shihori",
+      "Hadad",
+      "Ogad(Thara)"
+    ]
+  },
+  {
+    "name_en": "Bharuch",
+    "talukas": [
+      "Bharuch",
+      "Amod",
+      "Ankleshwar",
+      "Hansot",
+      "Jambusar",
+      "Jhagadia",
+      "Netrang",
+      "Vagra",
+      "Valia"
+    ]
+  },
+  {
+    "name_en": "Bhavnagar",
+    "talukas": [
+      "Bhavnagar",
+      "Gariadhar",
+      "Ghogha",
+      "Jesar",
+      "Mahuva",
+      "Palitana",
+      "Sihor",
+      "Talaja",
+      "Umrala",
+      "Vallabhipur"
+    ]
+  },
+  {
+    "name_en": "Botad",
+    "talukas": [
+      "Botad",
+      "Barwala",
+      "Gadhada",
+      "Ranpur"
+    ]
+  },
+  {
+    "name_en": "Chhota Udaipur",
+    "talukas": [
+      "Chhota Udaipur",
+      "Bodeli",
+      "Jetpur pavi",
+      "Kavant",
+      "Nasvadi",
+      "Sankheda",
+      "Kadwal"
+    ]
+  },
+  {
+    "name_en": "Dahod",
+    "talukas": [
+      "Dahod",
+      "Devgadh baria",
+      "Dhanpur",
+      "Fatepura",
+      "Garbada",
+      "Limkheda",
+      "Sanjeli",
+      "Jhalod",
+      "Singvad",
+      "Sukhsar",
+      "Guru Govind Limdi"
+    ]
+  },
+  {
+    "name_en": "Dang",
+    "talukas": [
+      "Ahwa",
+      "Subir",
+      "Waghai"
+    ]
+  },
+  {
+    "name_en": "Devbhoomi Dwarka",
+    "talukas": [
+      "Bhanvad",
+      "Kalyanpur",
+      "Khambhalia",
+      "Okhamandal"
+    ]
+  },
+  {
+    "name_en": "Gandhinagar",
+    "talukas": [
+      "Gandhinagar",
+      "Dehgam",
+      "Kalol",
+      "Mansa"
+    ]
+  },
+  {
+    "name_en": "Gir Somnath",
+    "talukas": [
+      "Gir-Gadhada",
+      "Kodinar",
+      "Sutrapada",
+      "Talala",
+      "Una",
+      "Veraval"
+    ]
+  },
+  {
+    "name_en": "Jamnagar",
+    "talukas": [
+      "Jamnagar",
+      "Dhrol",
+      "Jamjodhpur",
+      "Jodiya",
+      "Kalavad",
+      "Lalpur"
+    ]
+  },
+  {
+    "name_en": "Junagadh",
+    "talukas": [
+      "Junagadh",
+      "Bhesana",
+      "Junagadh Rural",
+      "Keshod",
+      "Malia",
+      "Manavadar",
+      "Mangrol",
+      "Mendarda",
+      "Vanthali",
+      "Visavadar"
+    ]
+  },
+  {
+    "name_en": "Kutch",
+    "talukas": [
+      "Abdasa",
+      "Anjar",
+      "Bhachau",
+      "Bhuj",
+      "Gandhidham",
+      "Lakhpat",
+      "Mandvi",
+      "Mundra",
+      "Nakhatrana",
+      "Rapar"
+    ]
+  },
+  {
+    "name_en": "Kheda",
+    "talukas": [
+      "Kheda",
+      "Galteshwar",
+      "Kapadvanj",
+      "Kathlal",
+      "Mahudha",
+      "Matar",
+      "Mehmedabad",
+      "Nadiad",
+      "Thasra",
+      "Vaso",
+      "Fagvel"
+    ]
+  },
+  {
+    "name_en": "Mahisagar",
+    "talukas": [
+      "Balasinor",
+      "Kadana",
+      "Khanpur",
+      "Lunawada",
+      "Santrampur",
+      "Virpur",
+      "Kothamba",
+      "Godhar(Gujarat)"
+    ]
+  },
+  {
+    "name_en": "Mehsana",
+    "talukas": [
+      "Mehsana",
+      "Becharaji",
+      "Jotana",
+      "Kadi",
+      "Kheralu",
+      "Satlasana",
+      "Unjha",
+      "Vadnagar",
+      "Vijapur",
+      "Visnagar"
+    ]
+  },
+  {
+    "name_en": "Morbi",
+    "talukas": [
+      "Halvad",
+      "Maliya",
+      "Morbi",
+      "Tankara",
+      "Wankaner"
+    ]
+  },
+  {
+    "name_en": "Narmada",
+    "talukas": [
+      "Dediapada",
+      "Garudeshwar",
+      "Nandod",
+      "Sagbara",
+      "Tilakwada",
+      "Chikda"
+    ]
+  },
+  {
+    "name_en": "Navsari",
+    "talukas": [
+      "Navsari",
+      "Vansda",
+      "Chikhli",
+      "Gandevi",
+      "Jalalpore",
+      "Khergam"
+    ]
+  },
+  {
+    "name_en": "Panchmahal",
+    "talukas": [
+      "Ghoghamba",
+      "Godhra",
+      "Halol",
+      "Jambughoda",
+      "Kalol",
+      "Morwa Hadaf",
+      "Shehera"
+    ]
+  },
+  {
+    "name_en": "Patan",
+    "talukas": [
+      "Patan",
+      "Chanasma",
+      "Harij",
+      "Radhanpur",
+      "Sami",
+      "Sankheswar",
+      "Santalpur",
+      "Sarasvati",
+      "Sidhpur"
+    ]
+  },
+  {
+    "name_en": "Porbandar",
+    "talukas": [
+      "Porbandar",
+      "Kutiyana",
+      "Ranavav"
+    ]
+  },
+  {
+    "name_en": "Rajkot",
+    "talukas": [
+      "Rajkot",
+      "Dhoraji",
+      "Gondal",
+      "Jamkandorna",
+      "Jasdan",
+      "Jetpur",
+      "Kotada Sangani",
+      "Lodhika",
+      "Paddhari",
+      "Upleta",
+      "Vinchchiya"
+    ]
+  },
+  {
+    "name_en": "Sabarkantha",
+    "talukas": [
+      "Himatnagar",
+      "Idar",
+      "Khedbrahma",
+      "Poshina",
+      "Prantij",
+      "Talod",
+      "Vadali",
+      "Vijaynagar"
+    ]
+  },
+  {
+    "name_en": "Surat",
+    "talukas": [
+      "Surat",
+      "Bardoli",
+      "Choryasi",
+      "Kamrej",
+      "Mahuva",
+      "Mandvi",
+      "Mangrol",
+      "Olpad",
+      "Palsana",
+      "Umarpada",
+      "Areth",
+      "Ambika"
+    ]
+  },
+  {
+    "name_en": "Surendranagar",
+    "talukas": [
+      "Chotila",
+      "Chuda",
+      "Dasada",
+      "Dhrangadhra",
+      "Lakhtar",
+      "Limbdi",
+      "Muli",
+      "Sayla",
+      "Thangadh",
+      "Wadhwan"
+    ]
+  },
+  {
+    "name_en": "Tapi",
+    "talukas": [
+      "Nizar",
+      "Songadh",
+      "Uchhal",
+      "Valod",
+      "Vyara",
+      "Kukarmunda",
+      "Dolvan",
+      "Ukai"
+    ]
+  },
+  {
+    "name_en": "Vadodara",
+    "talukas": [
+      "Vadodara",
+      "Dabhoi",
+      "Desar",
+      "Karjan",
+      "Padra",
+      "Savli",
+      "Sinor",
+      "Waghodia"
+    ]
+  },
+  {
+    "name_en": "Valsad",
+    "talukas": [
+      "Valsad",
+      "Dharampur",
+      "Kaprada",
+      "Pardi",
+      "Umbergaon",
+      "Vapi",
+      "Nana Pondha"
+    ]
+  },
+  {
+    "name_en": "Vav-Tharad",
+    "talukas": [
+      "Bhabhar",
+      "Deodar",
+      "Dharnidhar",
+      "Rah",
+      "Lakhani",
+      "Suigam",
+      "Tharad",
+      "Vav"
+    ]
+  }
+]

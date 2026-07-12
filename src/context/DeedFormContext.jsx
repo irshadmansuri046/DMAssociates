@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { defaultPartyFields, defaultWitnessFields, defaultCompliance } from '../utils/sroRequirements';
 import { buildMockDocument } from '../data/mockDocuments';
 import { DEFAULT_TEMPLATE_ID } from '../constants/templates';
+import { userDraftKey } from '../services/authService';
 
 const DeedFormContext = createContext();
 
@@ -19,6 +20,10 @@ const defaultState = {
     taluka: "",
     subRegistrarOffice: "",
     village: "",
+    districtId: "",
+    talukaId: "",
+    placeId: "",
+    sroId: "",
     blockSurveyNo: "",
     oldSurveyNo: "",
     newCitySurveyNo: "",
@@ -38,11 +43,15 @@ const defaultState = {
     floor: "",
     unitNumber: "",
     unitCardNo: "",
+    unitType: "flat",
     verandaArea: "",
     reraNumber: "",
     latitude: "",
     longitude: "",
     postalAddress: "",
+    parkingType: "",
+    parkingSlots: "",
+    parkingArea: "",
     plotValidationOrderNo: "",
     plotValidationDate: "",
     constructionPermissionNo: "",
@@ -136,7 +145,7 @@ const defaultState = {
 
 export const DeedFormProvider = ({ children }) => {
   const [formData, setFormData] = useState(() => {
-    const saved = localStorage.getItem('deed_app_draft');
+    const saved = localStorage.getItem(userDraftKey());
     if (!saved) return defaultState;
     try {
       const parsed = JSON.parse(saved);
@@ -159,7 +168,7 @@ export const DeedFormProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('deed_app_draft', JSON.stringify(formData));
+      localStorage.setItem(userDraftKey(), JSON.stringify(formData));
       setIsSaved(true);
       const timer = setTimeout(() => setIsSaved(false), 1500);
       return () => clearTimeout(timer);

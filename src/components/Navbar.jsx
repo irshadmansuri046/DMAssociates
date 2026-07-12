@@ -4,7 +4,7 @@ import { useDeedForm } from '../context/DeedFormContext';
 import { SOFTWARE_VERSION, APP_NAME } from '../constants/version';
 import { RotateCcw, FileText, Globe, Save, LogOut, Menu, X } from 'lucide-react';
 
-export default function Navbar({ onLogout }) {
+export default function Navbar({ onLogout, sessionUser = null }) {
   const { language, setLanguage, t } = useLanguage();
   const { resetForm, loadMockData, isSaved } = useDeedForm();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,6 +36,13 @@ export default function Navbar({ onLogout }) {
               </h1>
               <p className="hidden sm:block text-xs text-emerald-200 m-0 leading-tight">
                 Legal Document Generator · Gujarat
+                {sessionUser?.email ? (
+                  <span className="text-emerald-300/90">
+                    {' '}
+                    · {sessionUser.fullName || sessionUser.email}
+                    {sessionUser.role ? ` (${sessionUser.role})` : ''}
+                  </span>
+                ) : null}
               </p>
             </div>
           </div>

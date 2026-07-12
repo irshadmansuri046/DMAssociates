@@ -29,8 +29,12 @@ function propertyBase(locale) {
       floor: '૨',
       unitNumber: '૨૦૨',
       unitCardNo: 'A/01/02/202',
+      unitType: 'flat',
       verandaArea: '135.00',
       reraNumber: 'PR/GJ/RAJKOT/JETPUR/Others/MAA11966/190623',
+      parkingType: 'કવર્ડ',
+      parkingSlots: '૧૨',
+      parkingArea: '12.50',
       latitude: '22.3039',
       longitude: '70.8022',
       associationName: 'શ્રીનાથ કોમર્શિયલ કોમ્પ્લેક્સ',
@@ -79,8 +83,12 @@ function propertyBase(locale) {
     floor: '2',
     unitNumber: '202',
     unitCardNo: 'A/01/02/202',
+    unitType: 'flat',
     verandaArea: '135.00',
     reraNumber: 'PR/GJ/RAJKOT/JETPUR/Others/MAA11966/190623',
+    parkingType: 'Covered',
+    parkingSlots: '12',
+    parkingArea: '12.50',
     latitude: '22.3039',
     longitude: '70.8022',
     associationName: 'Shrinath Commercial Complex',
@@ -391,7 +399,7 @@ function emptyTxn() {
 }
 
 /** Type-specific parties, instrument, and financials */
-function typeOverlay(documentType, locale) {
+function typeOverlay(documentType, locale, templateId = 'builder') {
   const instrument = createEmptyInstrument();
   const p = (k) => party(locale, k);
 
@@ -576,7 +584,10 @@ function typeOverlay(documentType, locale) {
     case 'sale_deed':
     default:
       return {
-        parties: { sellers: [p('individualSeller')], buyers: [p('individualBuyer')] },
+        parties: {
+          sellers: [p(templateId === 'builder' ? 'developer' : 'individualSeller')],
+          buyers: [p('individualBuyer')],
+        },
         instrument,
         transaction: {
           totalSaleAmount: '5500000',
@@ -617,7 +628,7 @@ function typeOverlay(documentType, locale) {
 export function buildMockDocument({ documentType = 'sale_deed', templateId = 'builder', locale = 'en' } = {}) {
   const lang = locale === 'gu' ? 'gu' : 'en';
   const req = getDocumentRequirements(documentType);
-  const overlay = typeOverlay(documentType, lang);
+  const overlay = typeOverlay(documentType, lang, templateId);
 
   return {
     documentType,

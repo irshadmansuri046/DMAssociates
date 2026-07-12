@@ -1,13 +1,37 @@
 import { db } from '../database/indexedDb';
-import { STORAGE_KEYS } from '../constants/version';
 import { createEmptyDocument } from '../models/Document';
 import { formDataToDocument, documentToFormData } from '../models/adapters';
+import {
+  getSessionToken,
+  getSessionUser,
+  userActiveDocKey,
+  userDraftKey,
+} from '../services/authService';
+import {
+  remoteFinalizePaidDocument,
+  remoteGetDocument,
+  remoteListDocuments,
+  remoteDeleteDocument,
+} from '../services/supabaseDocuments';
+
+function hasRemoteSession() {
+  return Boolean(getSessionToken() && getSessionUser()?.id);
+}
+
+function mirrorLocalDraft(doc) {
+  try {
+    localStorage.setItem(userDraftKey(), JSON.stringify(documentToFormData(doc)));
+    localStorage.setItem(userActiveDocKey(), doc.id);
+  } catch {
+    // quota / private mode
+  }
+}
 
 /**
- * DocumentRepository — IndexedDB primary + localStorage draft mirror.
- * Swap implementation later for Supabase without changing callers.
+ * Local drafts stay on device. Supabase is written only on paid PDF generation.
  */
 export const DocumentRepository = {
+  /** Local-only save (IndexedDB + localStorage). Does not touch Supabase. */
   async save(document) {
     const doc = {
       ...document,
@@ -18,13 +42,39 @@ export const DocumentRepository = {
     } catch (err) {
       console.warn('IndexedDB save failed, using localStorage only', err);
     }
-    try {
-      localStorage.setItem(STORAGE_KEYS.draft, JSON.stringify(documentToFormData(doc)));
-      localStorage.setItem(STORAGE_KEYS.activeDocId, doc.id);
-    } catch {
-      // quota / private mode
-    }
+    mirrorLocalDraft(doc);
     return doc;
+  },
+
+  /**
+   * Persist full filled form + unlock payment to Supabase.
+   * Called only after successful payment when generating PDF. No PDF file is uploaded.
+   */
+  async saveOnPaidPdfGeneration(document, paymentDetails) {
+    const doc = {
+      ...document,
+      status: 'generated',
+      updatedAt: new Date().toISOString(),
+      generatedAt: document.generatedAt || new Date().toISOString(),
+    };
+
+    if (!hasRemoteSession()) {
+      throw new Error('Please log in again before generating the PDF.');
+    }
+
+    const result = await remoteFinalizePaidDocument(doc, paymentDetails);
+    const savedDoc =
+      result?.document && typeof result.document === 'object'
+        ? { ...doc, ...result.document }
+        : doc;
+
+    try {
+      await db.putDocument(savedDoc);
+    } catch {
+      // cache optional
+    }
+    mirrorLocalDraft(savedDoc);
+    return { document: savedDoc, payment: result?.payment || null, savedAt: result?.savedAt || null };
   },
 
   async get(id) {
@@ -34,10 +84,25 @@ export const DocumentRepository = {
     } catch {
       // fall through
     }
+
+    if (hasRemoteSession()) {
+      try {
+        return await remoteGetDocument(id);
+      } catch (err) {
+        console.warn('Supabase get failed', err);
+      }
+    }
     return null;
   },
 
   async list() {
+    if (hasRemoteSession()) {
+      try {
+        return await remoteListDocuments();
+      } catch (err) {
+        console.warn('Supabase list failed, trying local cache', err);
+      }
+    }
     try {
       return await db.listDocuments();
     } catch {
@@ -46,6 +111,13 @@ export const DocumentRepository = {
   },
 
   async remove(id) {
+    if (hasRemoteSession()) {
+      try {
+        await remoteDeleteDocument(id);
+      } catch (err) {
+        console.warn('Supabase delete failed', err);
+      }
+    }
     try {
       await db.deleteDocument(id);
     } catch {
@@ -53,15 +125,15 @@ export const DocumentRepository = {
     }
   },
 
-  /** Load active draft: IndexedDB by id, else localStorage formData */
   async loadActiveDraft() {
-    const activeId = localStorage.getItem(STORAGE_KEYS.activeDocId);
+    const activeId = localStorage.getItem(userActiveDocKey());
     if (activeId) {
       const doc = await this.get(activeId);
       if (doc) return doc;
     }
+
     try {
-      const raw = localStorage.getItem(STORAGE_KEYS.draft);
+      const raw = localStorage.getItem(userDraftKey());
       if (raw) {
         const formData = JSON.parse(raw);
         return formDataToDocument(formData, { id: activeId || undefined });
@@ -74,7 +146,7 @@ export const DocumentRepository = {
 
   saveFormDataDraft(formData, meta = {}) {
     const doc = formDataToDocument(formData, {
-      id: localStorage.getItem(STORAGE_KEYS.activeDocId) || undefined,
+      id: localStorage.getItem(userActiveDocKey()) || undefined,
       ...meta,
     });
     return this.save(doc);

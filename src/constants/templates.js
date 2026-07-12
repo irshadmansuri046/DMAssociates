@@ -152,6 +152,5 @@ export const TEMPLATES = {
 
 /** Sale Deed layouts that use the scanned Gujarat SRO / government bundle */
 export const SALE_DEED_GOVT_LAYOUT_TEMPLATES = new Set([
-  TEMPLATE_IDS.builder,
   TEMPLATE_IDS.government,
 ]);

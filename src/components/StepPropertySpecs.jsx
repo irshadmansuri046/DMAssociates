@@ -3,6 +3,7 @@ import { useDeedForm } from '../context/DeedFormContext';
 import { useLanguage } from '../context/LanguageContext';
 import { PROPERTY_TYPES } from '../utils/sroRequirements';
 import PhotoUploadField from './PhotoUploadField';
+import GujaratLocationFields from './GujaratLocationFields';
 import { MapPin, Compass, Building, ShieldAlert, FileText, Camera } from 'lucide-react';
 
 export default function StepPropertySpecs({ errors = {} }) {
@@ -52,77 +53,7 @@ export default function StepPropertySpecs({ errors = {} }) {
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* District */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {t('district')} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={p.district || ''}
-              onChange={(e) => updateField('property.district', e.target.value)}
-              className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
-                errors.district ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
-              }`}
-              placeholder="e.g. Rajkot"
-            />
-            {errors.district && <p className="text-[10px] text-red-605 mt-1">{errors.district}</p>}
-          </div>
-
-          {/* Taluka */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {t('taluka')} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={p.taluka || ''}
-              onChange={(e) => updateField('property.taluka', e.target.value)}
-              className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
-                errors.taluka ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
-              }`}
-              placeholder="e.g. Jetpur"
-            />
-            {errors.taluka && <p className="text-[10px] text-red-655 mt-1">{errors.taluka}</p>}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Village (Moje) */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Village (Moje / મોજે) <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={p.village || ''}
-              onChange={(e) => updateField('property.village', e.target.value)}
-              className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
-                errors.village ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
-              }`}
-              placeholder="e.g. Jetpur"
-            />
-            {errors.village && <p className="text-[10px] text-red-655 mt-1">{errors.village}</p>}
-          </div>
-
-          {/* Sub-Registrar Office */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {t('sro')} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={p.subRegistrarOffice || ''}
-              onChange={(e) => updateField('property.subRegistrarOffice', e.target.value)}
-              className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
-                errors.subRegistrarOffice ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
-              }`}
-              placeholder="e.g. Jetpur-1 (Rajkot)"
-            />
-            {errors.subRegistrarOffice && <p className="text-[10px] text-red-655 mt-1">{errors.subRegistrarOffice}</p>}
-          </div>
-        </div>
+        <GujaratLocationFields property={p} errors={errors} updateField={updateField} />
       </div>
 
       {/* 2. Survey Codes & Metrics */}
@@ -294,6 +225,18 @@ export default function StepPropertySpecs({ errors = {} }) {
           <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide m-0">Project / Unit Details (કોમ્પ્લેક્ષ / યુનિટ)</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Unit Type (યુનિટ પ્રકાર)</label>
+              <select
+                value={p.unitType || 'flat'}
+                onChange={(e) => updateField('property.unitType', e.target.value)}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+              >
+                <option value="flat">Flat / Apartment (ફ્લેટ)</option>
+                <option value="row_house">Row House (રો-હાઉસ)</option>
+                <option value="house">Independent House / Bungalow (મકાન)</option>
+              </select>
+            </div>
+            <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Complex / Site Name</label>
               <input type="text" value={p.complexName || ''} onChange={(e) => updateField('property.complexName', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="e.g. Shrinath Complex" />
             </div>
@@ -301,6 +244,8 @@ export default function StepPropertySpecs({ errors = {} }) {
               <label className="block text-xs font-semibold text-slate-700 mb-1">Tower / Building</label>
               <input type="text" value={p.tower || ''} onChange={(e) => updateField('property.tower', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="e.g. Tower A" />
             </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Floor / Unit No.</label>
               <div className="flex gap-2">
@@ -308,8 +253,6 @@ export default function StepPropertySpecs({ errors = {} }) {
                 <input type="text" value={p.unitNumber || ''} onChange={(e) => updateField('property.unitNumber', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="Unit" />
               </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Unit Card No.</label>
               <input type="text" value={p.unitCardNo || ''} onChange={(e) => updateField('property.unitCardNo', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="A/01/02/202" />
@@ -318,9 +261,22 @@ export default function StepPropertySpecs({ errors = {} }) {
               <label className="block text-xs font-semibold text-slate-700 mb-1">Veranda / Share Area (Sqm)</label>
               <input type="number" value={p.verandaArea || ''} onChange={(e) => updateField('property.verandaArea', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="135.00" />
             </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">RERA Registration No.</label>
               <input type="text" value={p.reraNumber || ''} onChange={(e) => updateField('property.reraNumber', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="PR/GJ/..." />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Parking Type / Slots</label>
+              <div className="flex gap-2">
+                <input type="text" value={p.parkingType || ''} onChange={(e) => updateField('property.parkingType', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="Covered" />
+                <input type="text" value={p.parkingSlots || ''} onChange={(e) => updateField('property.parkingSlots', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="Slot no." />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Parking Area (Sqm)</label>
+              <input type="text" value={p.parkingArea || ''} onChange={(e) => updateField('property.parkingArea', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="12.5" />
             </div>
           </div>
         </div>

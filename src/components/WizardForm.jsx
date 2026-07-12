@@ -7,8 +7,12 @@ import { ValidationEngine } from '../validators/ValidationEngine';
 import { formDataToDocument } from '../models/adapters';
 import { generateDocumentQrDataUrl } from '../services/QrService';
 import { DocumentRepository } from '../repositories/DocumentRepository';
-import { SOFTWARE_VERSION, APP_NAME } from '../constants/version';
+import { SOFTWARE_VERSION, APP_NAME, PDF_DOWNLOAD_PRICE_INR } from '../constants/version';
 import { getDocumentRequirements, getWizardStepsForType } from '../constants/documentTypeRequirements';
+import { getDocumentTypeLabel } from '../constants/documentTypes';
+import { getSessionUser } from '../services/authService';
+import { generateTaxInvoicePdf } from '../generators/invoice-generator';
+import { createInvoiceNumber, formatInr, splitInclusiveGst } from '../utils/gst';
 import StepPartyDetails from './StepPartyDetails';
 import StepPropertySpecs from './StepPropertySpecs';
 import StepPaymentMatrix from './StepPaymentMatrix';
@@ -16,7 +20,7 @@ import StepComplianceChecklist from './StepComplianceChecklist';
 import StepGovRecords from './StepGovRecords';
 import DocumentConfigBar from './DocumentConfigBar';
 import DocumentTemplate from './DocumentTemplate';
-import { ChevronLeft, ChevronRight, CheckCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle, AlertTriangle, Loader2, FileText, Receipt } from 'lucide-react';
 
 export default function WizardForm() {
   const { step, setStep, formData } = useDeedForm();
@@ -33,6 +37,10 @@ export default function WizardForm() {
   const [paymentMethod, setPaymentMethod] = useState('upi');
   const [mockUpiId, setMockUpiId] = useState('gras.user@oksbi');
   const [mockCardNo, setMockCardNo] = useState('4111 2222 3333 4444');
+  const [unlockPayment, setUnlockPayment] = useState(null);
+  const [isInvoiceGenerating, setIsInvoiceGenerating] = useState(false);
+  const sessionUser = getSessionUser();
+  const gstBreakup = splitInclusiveGst(PDF_DOWNLOAD_PRICE_INR);
 
   const req = getDocumentRequirements(formData.documentType);
   const wizardSteps = useMemo(
@@ -44,11 +52,53 @@ export default function WizardForm() {
   useEffect(() => {
     setPaymentStep('checkout');
     setDownloadError(null);
+    setUnlockPayment(null);
   }, [formData.transaction?.totalSaleAmount, formData.parties?.sellers?.length, formData.documentType]);
 
-  useEffect(() => {
-    DocumentRepository.saveFormDataDraft(formData).catch(() => {});
-  }, [formData]);
+  const buildUnlockPayment = () => {
+    const paidAt = new Date().toISOString();
+    const digits = String(mockCardNo || '').replace(/\D/g, '');
+    const cardLast4 = digits.slice(-4) || null;
+    const gst = splitInclusiveGst(PDF_DOWNLOAD_PRICE_INR);
+    return {
+      amount: PDF_DOWNLOAD_PRICE_INR,
+      currency: 'INR',
+      method: paymentMethod === 'card' ? 'card' : 'upi',
+      status: 'success',
+      paidAt,
+      isDemo: true,
+      invoiceNo: createInvoiceNumber(new Date(paidAt)),
+      gstInclusive: true,
+      taxableValue: gst.taxableValue,
+      gstAmount: gst.gstAmount,
+      cgst: gst.cgst,
+      sgst: gst.sgst,
+      gstRatePercent: gst.ratePercent,
+      upiId: paymentMethod === 'upi' ? mockUpiId : null,
+      payerRef: paymentMethod === 'upi' ? mockUpiId : cardLast4 ? `card_****${cardLast4}` : null,
+      cardLast4: paymentMethod === 'card' ? cardLast4 : null,
+    };
+  };
+
+  const runInvoiceDownload = async () => {
+    setIsInvoiceGenerating(true);
+    setDownloadError(null);
+    try {
+      const payment = unlockPayment || buildUnlockPayment();
+      if (!unlockPayment) setUnlockPayment(payment);
+      await generateTaxInvoicePdf({
+        user: sessionUser || getSessionUser(),
+        payment,
+        documentTypeLabel: getDocumentTypeLabel(formData.documentType || 'sale_deed', 'en'),
+        amountInclusive: PDF_DOWNLOAD_PRICE_INR,
+      });
+    } catch (err) {
+      console.error(err);
+      setDownloadError(err.message || 'Invoice download failed');
+    } finally {
+      setIsInvoiceGenerating(false);
+    }
+  };
 
   // Clamp step when document type changes and financial step disappears
   useEffect(() => {
@@ -105,10 +155,15 @@ export default function WizardForm() {
     setIsGenerating(true);
     setDownloadError(null);
     try {
+      const payment = unlockPayment || buildUnlockPayment();
       const doc = formDataToDocument(formData, {
         version: SOFTWARE_VERSION,
         generatedAt: new Date().toISOString(),
       });
+
+      // Persist filled form + unlock payment to Supabase (no PDF file stored)
+      await DocumentRepository.saveOnPaidPdfGeneration(doc, payment);
+
       const qr = await generateDocumentQrDataUrl(doc);
       setQrDataUrl(qr);
       // Allow React to paint printable DOM (incl. uploaded photo <img> tags)
@@ -118,7 +173,6 @@ export default function WizardForm() {
         villageName: formData.property?.village || 'Draft',
         document: doc,
       });
-      await DocumentRepository.save({ ...doc, status: 'generated', generatedAt: new Date().toISOString() });
     } catch (err) {
       console.error(err);
       setDownloadError(err.message || 'PDF generation failed');
@@ -275,6 +329,7 @@ export default function WizardForm() {
                 onClick={() => {
                   setIsReviewModalOpen(false);
                   setPaymentStep('checkout');
+                  setUnlockPayment(null);
                 }}
                 className="text-white bg-transparent border-0 cursor-pointer text-lg font-bold"
               >
@@ -284,7 +339,11 @@ export default function WizardForm() {
             <div className="p-6 space-y-4 bg-slate-50">
               <div className="bg-white p-4 rounded-xl border border-slate-200 text-center">
                 <div className="text-[10px] font-bold text-slate-400 uppercase">Service Charge</div>
-                <div className="text-3xl font-black text-emerald-950">₹300.00</div>
+                <div className="text-3xl font-black text-emerald-950">₹{PDF_DOWNLOAD_PRICE_INR}.00</div>
+                <p className="text-[10px] text-slate-500 m-0 mt-1">
+                  Inclusive of GST ({gstBreakup.ratePercent}%) · Taxable {formatInr(gstBreakup.taxableValue)} + GST{' '}
+                  {formatInr(gstBreakup.gstAmount)}
+                </p>
               </div>
 
               {paymentStep === 'checkout' && (
@@ -318,12 +377,14 @@ export default function WizardForm() {
                   <button
                     type="button"
                     onClick={() => {
+                      const payment = buildUnlockPayment();
+                      setUnlockPayment(payment);
                       setPaymentStep('processing');
                       setTimeout(() => setPaymentStep('success'), 1000);
                     }}
                     className="w-full py-2.5 rounded-lg bg-emerald-700 text-white text-sm font-bold cursor-pointer border-0"
                   >
-                    Pay ₹300 (Demo)
+                    Pay ₹{PDF_DOWNLOAD_PRICE_INR} (Demo)
                   </button>
                 </div>
               )}
@@ -339,10 +400,13 @@ export default function WizardForm() {
                 <div className="space-y-3 text-center">
                   <CheckCircle className="mx-auto text-emerald-600" size={36} />
                   <p className="text-sm font-semibold m-0">Payment successful</p>
+                  {unlockPayment?.invoiceNo && (
+                    <p className="text-[10px] text-slate-500 m-0">Invoice {unlockPayment.invoiceNo}</p>
+                  )}
                   {downloadError && <p className="text-xs text-red-600">{downloadError}</p>}
                   <button
                     type="button"
-                    disabled={isGenerating}
+                    disabled={isGenerating || isInvoiceGenerating}
                     onClick={runPdfGeneration}
                     className="w-full py-2.5 rounded-lg bg-emerald-700 text-white text-sm font-bold cursor-pointer border-0 disabled:opacity-70 flex items-center justify-center gap-2"
                   >
@@ -351,7 +415,25 @@ export default function WizardForm() {
                         <Loader2 size={16} className="animate-spin" /> Generating…
                       </>
                     ) : (
-                      'Download PDF'
+                      <>
+                        <FileText size={16} /> Download PDF
+                      </>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isGenerating || isInvoiceGenerating}
+                    onClick={runInvoiceDownload}
+                    className="w-full py-2.5 rounded-lg bg-white text-emerald-900 border border-emerald-700 text-sm font-bold cursor-pointer disabled:opacity-70 flex items-center justify-center gap-2"
+                  >
+                    {isInvoiceGenerating ? (
+                      <>
+                        <Loader2 size={16} className="animate-spin" /> Preparing invoice…
+                      </>
+                    ) : (
+                      <>
+                        <Receipt size={16} /> Download Invoice
+                      </>
                     )}
                   </button>
                 </div>

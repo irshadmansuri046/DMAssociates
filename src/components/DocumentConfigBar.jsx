@@ -51,6 +51,9 @@ export default function DocumentConfigBar() {
       <p className="text-[11px] text-slate-500 mt-3 mb-0 leading-relaxed">
         Form steps adapt to this type
         {req.showFinancialStep ? '' : ' (no financial step)'}.
+        {templateId === 'builder' && docType === 'sale_deed'
+          ? ' Builder Style is for Promoter → Allottee (flat / row house / house) sale deeds.'
+          : ''}{' '}
         Use <span className="font-semibold text-slate-700">Load Mock Data</span> after selecting type, template, and language —
         mock fills only fields relevant to <span className="font-semibold">{DOCUMENT_TYPES[docType]?.label.en}</span>.
       </p>

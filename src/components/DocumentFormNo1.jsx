@@ -14,6 +14,7 @@ import {
 } from '../utils/aalekhDocumentUtils';
 import PhotoSlotBox, { ThumbSlotBox, SignatureSlotBox, PASSPORT_PHOTO } from './PhotoSlotBox';
 import { getPartyRoles } from '../constants/partyRoles';
+import { APP_NAME } from '../constants/version';
 
 /**
  * Registration Act 1908 Section 32-A Appendix — AALEKH page 17–18
@@ -86,9 +87,9 @@ export default function DocumentFormNo1({ data, governmentStyle = false }) {
   };
 
   return (
-    <div style={{ ...aalekhPageStyle({ pageBreakAfter: 'auto', ...pageExtra }), display: 'flex', flexDirection: 'column' }} className={`gov-doc-page aalekh-s32a${governmentStyle ? ' govt-sale-deed-page' : ''}`}>
+    <div style={{ ...aalekhPageStyle({ pageBreakAfter: 'auto', ...pageExtra }), display: 'flex', flexDirection: 'column', minHeight: governmentStyle ? '297mm' : undefined }} className={`gov-doc-page aalekh-s32a${governmentStyle ? ' govt-sale-deed-page' : ''}`}>
       <Watermark />
-      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', fontSize: AALEKH.fontSizeTiny }}>
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', flex: 1, fontSize: AALEKH.fontSizeTiny, minHeight: 0 }}>
         <div style={{ textAlign: 'center', marginBottom: '8px' }}>
           <div style={{ fontWeight: 'bold', fontSize: '11pt', textDecoration: 'underline' }}>
             નોંધણી અધિનિયમ ૧૯૦૮ની કલમ ૩૨-એ મુજબનું પરિશિષ્ટ
@@ -167,6 +168,20 @@ export default function DocumentFormNo1({ data, governmentStyle = false }) {
             party={w || {}}
           />
         ))}
+
+        <div
+          style={{
+            marginTop: 'auto',
+            paddingTop: '12px',
+            textAlign: 'center',
+            fontSize: '8.5pt',
+            color: '#4b5563',
+            borderTop: '0.5px solid #d1d5db',
+            lineHeight: 1.4,
+          }}
+        >
+          Created by : {APP_NAME}
+        </div>
       </div>
     </div>
   );

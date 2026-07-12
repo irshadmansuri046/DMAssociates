@@ -4,23 +4,21 @@ import { DeedFormProvider } from './context/DeedFormContext';
 import Navbar from './components/Navbar';
 import WizardForm from './components/WizardForm';
 import Login from './components/Login';
+import { clearSession, getSessionUser, isLoggedIn } from './services/authService';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return sessionStorage.getItem('deed_app_logged_in') === 'true';
-  });
+  const [sessionUser, setSessionUser] = useState(() => (isLoggedIn() ? getSessionUser() : null));
 
-  const handleLoginSuccess = () => {
-    sessionStorage.setItem('deed_app_logged_in', 'true');
-    setIsLoggedIn(true);
+  const handleLoginSuccess = (user) => {
+    setSessionUser(user);
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('deed_app_logged_in');
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await clearSession();
+    setSessionUser(null);
   };
 
-  if (!isLoggedIn) {
+  if (!sessionUser) {
     return <Login onLoginSuccess={handleLoginSuccess} />;
   }
 
@@ -28,7 +26,7 @@ function App() {
     <LanguageProvider>
       <DeedFormProvider>
         <div className="min-h-screen bg-slate-50 flex flex-col overflow-x-hidden">
-          <Navbar onLogout={handleLogout} />
+          <Navbar onLogout={handleLogout} sessionUser={sessionUser} />
           <main className="flex-grow min-w-0">
             <WizardForm />
           </main>

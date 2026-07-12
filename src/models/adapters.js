@@ -43,14 +43,23 @@ function syncPropertyFlat(property) {
   unit.floor = p.floor || unit.floor;
   unit.unitNumber = p.unitNumber || unit.unitNumber;
   unit.unitCardNo = p.unitCardNo || unit.unitCardNo || rev.propertyCardNo;
+  unit.unitType = p.unitType || unit.unitType || 'flat';
 
   areas.totalPlotArea = p.totalPlotArea || areas.totalPlotArea;
   areas.constructionArea = p.constructionArea || areas.constructionArea;
   areas.carpetArea = p.carpetArea || areas.carpetArea;
   areas.verandaArea = p.verandaArea || areas.verandaArea;
+  areas.parkingArea = p.parkingArea || areas.parkingArea;
+  areas.parkingSlots = p.parkingSlots || areas.parkingSlots;
   areas.builtUpArea = areas.builtUpArea || p.constructionArea || '';
   areas.superBuiltUpArea = areas.superBuiltUpArea || '';
 
+  const parking = {
+    ...(p.parking || {}),
+    type: p.parkingType || p.parking?.type || '',
+    slots: p.parkingSlots || p.parking?.slots || areas.parkingSlots || '',
+    area: p.parkingArea || p.parking?.area || areas.parkingArea || '',
+  };
   permissions.tenureType = p.tenureType || permissions.tenureType;
   permissions.naOrderNo = p.naOrderNo || permissions.naOrderNo;
   permissions.naOrderDate = p.naOrderDate || permissions.naOrderDate;
@@ -90,6 +99,7 @@ function syncPropertyFlat(property) {
     building,
     unit,
     areas,
+    parking,
     permissions,
     govRecords: gov,
     revenueRecords: rev,
@@ -108,10 +118,14 @@ function syncPropertyFlat(property) {
     floor: unit.floor,
     unitNumber: unit.unitNumber,
     unitCardNo: unit.unitCardNo,
+    unitType: unit.unitType || 'flat',
     totalPlotArea: areas.totalPlotArea,
     constructionArea: areas.constructionArea,
     carpetArea: areas.carpetArea,
     verandaArea: areas.verandaArea,
+    parkingType: parking.type,
+    parkingSlots: parking.slots,
+    parkingArea: parking.area,
     naOrderNo: permissions.naOrderNo,
     naOrderDate: permissions.naOrderDate,
     reraNumber: permissions.reraNumber,
