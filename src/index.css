@@ -1,0 +1,296 @@
+@import "tailwindcss";
+
+/* PDF tables: 1px outer frame + 0.5px inner grid (avoids double-thick edges) */
+.deed-pdf-table {
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  border: 1px solid #000000 !important;
+  line-height: 1.25 !important;
+}
+.deed-pdf-table > tbody > tr > td,
+.deed-pdf-table > tbody > tr > th,
+.deed-pdf-table > thead > tr > th,
+.deed-pdf-table > thead > tr > td {
+  border: 0.5px solid #000000 !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Government sale-deed pages — match scanned SRO deed spacing */
+.govt-sale-deed-page {
+  font-family: "Noto Sans Gujarati", "Shruti", "Nirmala UI", sans-serif !important;
+}
+.govt-sale-deed-page p {
+  orphans: 3;
+  widows: 3;
+}
+
+:root {
+  --color-legal-green-50: #f4fbf7;
+  --color-legal-green-100: #e3f6ed;
+  --color-legal-green-600: #0d5e3c;
+  --color-legal-green-700: #0a4b30;
+  --color-legal-green-800: #063120;
+  --color-parchment: #fcf9f2;
+  --color-parchment-dark: #f5eedc;
+  --color-stamp-red: #d32f2f;
+  --color-stamp-blue: #1976d2;
+}
+
+body {
+  background-color: #f7f9fa;
+  color: #1e293b;
+  font-family: 'Inter', 'Outfit', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Touch-friendly form controls on small screens */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+  .safe-bottom {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Custom scrollbars for a cleaner UI */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Custom Page/Stamp Styles */
+.ledger-page {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.05);
+  background-color: var(--color-parchment);
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.stamp-header {
+  border: 4px double var(--color-stamp-blue);
+  background-color: rgba(25, 118, 210, 0.02);
+}
+
+/* Red left margin and blue right margin resembling actual registry/ledger paper */
+.ledger-paper-lines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2.25rem;
+  width: 2px;
+  background-color: rgba(211, 47, 47, 0.25); /* stamp red */
+  pointer-events: none;
+}
+
+.ledger-paper-lines::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 2.25rem;
+  width: 1px;
+  background-color: rgba(25, 118, 210, 0.15); /* stamp blue */
+  pointer-events: none;
+}
+
+/* 3D Flipbook Core Classes */
+.flipbook-perspective {
+  perspective: 1800px;
+}
+
+.flipbook-container {
+  transform-style: preserve-3d;
+  position: relative;
+  transition: transform 0.6s ease;
+}
+
+.flip-page {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  top: 0;
+  left: 50%;
+  transform-origin: left center;
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), z-index 0s;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  z-index: 10;
+}
+
+.flip-page.flipped {
+  transform: rotateY(-180deg);
+  z-index: 20;
+}
+
+.page-side {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  box-sizing: border-box;
+}
+
+.page-front {
+  z-index: 2;
+  background: var(--color-parchment);
+}
+
+.page-back {
+  transform: rotateY(180deg);
+  background: var(--color-parchment-dark);
+  z-index: 1;
+}
+
+/* Center spine shadow of book */
+.flipbook-spine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.02) 20%,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.02) 80%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 30;
+  pointer-events: none;
+}
+
+/* General classes for print-proofing the HTML to PDF conversion */
+@media print {
+  body {
+    background-color: white;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Official government document styles for PDF rendering */
+.gov-doc-bundle,
+.gov-doc-page {
+  font-family: "Noto Sans Gujarati", "Shruti", "Nirmala UI", sans-serif !important;
+  color: #000000 !important;
+  background-color: #ffffff !important;
+}
+
+.aalekh-cover {
+  border: 1px solid #000 !important;
+}
+
+.aalekh-page table,
+.aalekh-photo-page table,
+.aalekh-s32a table,
+.aalekh-cover table {
+  border-collapse: collapse;
+}
+
+/* Pagination / keep-together helpers for legal PDF pages */
+.deed-keep {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.deed-engine-page p,
+.deed-engine-page table {
+  orphans: 3;
+  widows: 3;
+}
+
+
+.gov-doc-page * {
+  border-color: #000000;
+}
+
+/* Override Tailwind v4 oklch variables with hex for html2canvas compatibility in print rendering */
+#printable-deed-area, #printable-deed-area *, .gov-doc-bundle, .gov-doc-bundle * {
+  /* Override border-color and outline-color preflight rules */
+  border-color: #e2e8f0;
+  outline-color: currentColor;
+  
+  /* Reset tailwind v4 default shadow/ring oklch variables to safe RGB values */
+  --tw-ring-color: rgba(0, 0, 0, 0);
+  --tw-ring-offset-color: #ffffff;
+  --tw-shadow-color: rgba(0, 0, 0, 0);
+
+  /* Gray palette overrides (Vite/Tailwind preflight border default is var(--color-gray-200)) */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-755: #374151;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* Slate palette overrides */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-650: #3b4e66;
+  --color-slate-700: #334155;
+  --color-slate-750: #253347;
+  --color-slate-800: #1e293b;
+  --color-slate-850: #141f30;
+  --color-slate-900: #0f172a;
+  
+  /* Emerald palette overrides */
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-800: #065f46;
+  --color-emerald-850: #044b36;
+  --color-emerald-900: #064e3b;
+  --color-emerald-950: #022c22;
+  
+  /* Amber palette overrides */
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-600: #d97706;
+  --color-amber-800: #92400e;
+  --color-amber-900: #78350f;
+  
+  /* Red palette overrides */
+  --color-red-50: #fef2f2;
+  --color-red-200: #fecaca;
+  --color-red-500: #ef4444;
+  --color-red-800: #991b1b;
+}
