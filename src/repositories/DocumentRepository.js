@@ -13,6 +13,7 @@ import {
   remoteListDocuments,
   remoteDeleteDocument,
 } from '../services/supabaseDocuments';
+import { savePlatformInvoice } from '../services/invoiceService';
 
 function hasRemoteSession() {
   return Boolean(getSessionToken() && getSessionUser()?.id);
@@ -68,6 +69,19 @@ export const DocumentRepository = {
         ? { ...doc, ...result.document }
         : doc;
 
+    // Attach document id to invoice row if invoice was already created on payment
+    if (paymentDetails?.invoiceNo) {
+      try {
+        await savePlatformInvoice({
+          payment: paymentDetails,
+          documentType: doc.documentType || 'sale_deed',
+          documentId: savedDoc.id,
+        });
+      } catch (err) {
+        console.warn('Invoice link after PDF save failed', err);
+      }
+    }
+
     try {
       await db.putDocument(savedDoc);
     } catch {
@@ -75,6 +89,17 @@ export const DocumentRepository = {
     }
     mirrorLocalDraft(savedDoc);
     return { document: savedDoc, payment: result?.payment || null, savedAt: result?.savedAt || null };
+  },
+
+  async saveInvoice(paymentDetails, meta = {}) {
+    if (!hasRemoteSession()) {
+      throw new Error('Please log in again before saving the invoice.');
+    }
+    return savePlatformInvoice({
+      payment: paymentDetails,
+      documentType: meta.documentType || 'sale_deed',
+      documentId: meta.documentId || null,
+    });
   },
 
   async get(id) {

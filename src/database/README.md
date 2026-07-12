@@ -28,9 +28,11 @@ Project: **DM Associates** (`nuihydhkqbvwvngbbahu`)
 | `title_history` | Title milestones |
 | `witnesses` | Witnesses |
 | `download_payments` | Platform unlock fee (₹999) after pay |
+| `invoices` | Tax invoices (GST breakup, bill-to, payment refs) |
 | `generated_pdfs` | Legacy metadata table (unused for file storage) |
 
-RPC used on PDF generate: `finalize_paid_document(token, document, payment)`
+RPC used on PDF generate: `finalize_paid_document(token, document, payment)`  
+Invoice RPCs: `save_user_invoice`, `list_user_invoices`
 
 ### Demo users
 

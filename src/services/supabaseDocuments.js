@@ -23,6 +23,23 @@ export async function remoteFinalizePaidDocument(document, payment) {
   return data;
 }
 
+export async function remoteSaveInvoice(invoice) {
+  const { data, error } = await supabase.rpc('save_user_invoice', {
+    p_token: requireToken(),
+    p_invoice: invoice,
+  });
+  if (error) throw new Error(error.message || 'Failed to save invoice');
+  return data;
+}
+
+export async function remoteListInvoices() {
+  const { data, error } = await supabase.rpc('list_user_invoices', {
+    p_token: requireToken(),
+  });
+  if (error) throw new Error(error.message || 'Failed to list invoices');
+  return Array.isArray(data) ? data : [];
+}
+
 export async function remoteGetDocument(id) {
   const { data, error } = await supabase.rpc('get_user_document', {
     p_token: requireToken(),

@@ -86,6 +86,12 @@ export default function WizardForm() {
     try {
       const payment = unlockPayment || buildUnlockPayment();
       if (!unlockPayment) setUnlockPayment(payment);
+
+      // Persist invoice details to Supabase (no PDF file stored)
+      await DocumentRepository.saveInvoice(payment, {
+        documentType: formData.documentType || 'sale_deed',
+      });
+
       await generateTaxInvoicePdf({
         user: sessionUser || getSessionUser(),
         payment,
@@ -97,6 +103,18 @@ export default function WizardForm() {
       setDownloadError(err.message || 'Invoice download failed');
     } finally {
       setIsInvoiceGenerating(false);
+    }
+  };
+
+  const persistInvoiceOnPaymentSuccess = async (payment) => {
+    try {
+      const saved = await DocumentRepository.saveInvoice(payment, {
+        documentType: formData.documentType || 'sale_deed',
+      });
+      return saved;
+    } catch (err) {
+      console.warn('Invoice save on payment failed', err);
+      return null;
     }
   };
 
@@ -376,10 +394,11 @@ export default function WizardForm() {
                   />
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={async () => {
                       const payment = buildUnlockPayment();
                       setUnlockPayment(payment);
                       setPaymentStep('processing');
+                      await persistInvoiceOnPaymentSuccess(payment);
                       setTimeout(() => setPaymentStep('success'), 1000);
                     }}
                     className="w-full py-2.5 rounded-lg bg-emerald-700 text-white text-sm font-bold cursor-pointer border-0"
