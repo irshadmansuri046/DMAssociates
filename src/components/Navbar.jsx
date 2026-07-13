@@ -35,7 +35,7 @@ export default function Navbar({ onLogout, sessionUser = null }) {
                 </span>
               </h1>
               <p className="hidden sm:block text-xs text-emerald-200 m-0 leading-tight">
-                Legal Document Generator · Gujarat
+                {t('legalDocGeneratorGujarat')}
                 {sessionUser?.email ? (
                   <span className="text-emerald-300/90">
                     {' '}
@@ -89,10 +89,10 @@ export default function Navbar({ onLogout, sessionUser = null }) {
               onClick={onLogout}
               type="button"
               className={`${actionBtn} bg-red-900/80 hover:bg-red-800 text-white border border-red-800 focus:ring-red-500`}
-              title="Logout"
+              title={t('logout')}
             >
               <LogOut size={14} />
-              <span>Logout</span>
+              <span>{t('logout')}</span>
             </button>
           </div>
 
@@ -102,7 +102,7 @@ export default function Navbar({ onLogout, sessionUser = null }) {
               onClick={handleLanguageToggle}
               type="button"
               className={`${actionBtn} bg-emerald-800 text-white border border-emerald-700 px-2.5`}
-              aria-label="Toggle language"
+              aria-label={t('toggleLanguageAria')}
             >
               <Globe size={16} />
               <span className="uppercase">{language === 'gu' ? 'EN' : 'GU'}</span>
@@ -112,7 +112,7 @@ export default function Navbar({ onLogout, sessionUser = null }) {
               onClick={() => setMenuOpen((o) => !o)}
               className={`${actionBtn} bg-emerald-800 text-white border border-emerald-700 px-2.5`}
               aria-expanded={menuOpen}
-              aria-label="Open menu"
+              aria-label={t('openMenu')}
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
@@ -158,7 +158,7 @@ export default function Navbar({ onLogout, sessionUser = null }) {
               className={`${actionBtn} w-full bg-red-900/80 text-white border border-red-800`}
             >
               <LogOut size={14} />
-              Logout
+              {t('logout')}
             </button>
           </div>
         )}

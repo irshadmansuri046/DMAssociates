@@ -23,7 +23,7 @@ import DocumentTemplate from './DocumentTemplate';
 import { ChevronLeft, ChevronRight, CheckCircle, AlertTriangle, Loader2, FileText, Receipt } from 'lucide-react';
 
 export default function WizardForm() {
-  const { step, setStep, formData } = useDeedForm();
+  const { step, setStep, formData, updateField } = useDeedForm();
   const { t, language } = useLanguage();
   const [validationErrors, setValidationErrors] = useState({});
   const [showErrorBanner, setShowErrorBanner] = useState(false);
@@ -48,6 +48,12 @@ export default function WizardForm() {
     [formData.documentType, language]
   );
   const stepKeys = wizardSteps.map((s) => s.key);
+
+  useEffect(() => {
+    const locale = language === 'gu' ? 'gu' : 'en';
+    if (formData.locale !== locale) updateField('locale', locale);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync PDF locale with UI language
+  }, [language]);
 
   useEffect(() => {
     setPaymentStep('checkout');
@@ -219,7 +225,7 @@ export default function WizardForm() {
     <div className="max-w-5xl mx-auto px-3 py-4 sm:px-6 sm:py-8 lg:px-8 pb-[max(1rem,env(safe-area-inset-bottom))]">
       <DocumentConfigBar />
 
-      <nav className="mb-4 sm:mb-8 no-print" aria-label="Progress">
+      <nav className="mb-4 sm:mb-8 no-print" aria-label={t('progress')}>
         <ol role="list" className="flex flex-col gap-1 md:flex-row md:gap-0 md:space-x-4 bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-slate-200">
           {stepsList.map((s, index) => {
             const isCompleted = step > s.id;
@@ -304,7 +310,7 @@ export default function WizardForm() {
             className="flex items-center justify-center gap-1.5 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-800 px-4 py-3 sm:px-5 sm:py-2.5 rounded-lg cursor-pointer disabled:opacity-75 w-full sm:w-auto min-h-[44px]"
           >
             <span className="text-center leading-tight">
-              {step === stepsList.length - 1 ? 'Validate & Build' : t('next')}
+              {step === stepsList.length - 1 ? t('validateAndBuild') : t('next')}
             </span>
             {step < stepsList.length - 1 && <ChevronRight size={16} className="shrink-0" />}
           </button>
@@ -337,7 +343,7 @@ export default function WizardForm() {
           <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-md w-full max-h-[92vh] overflow-y-auto border border-slate-100">
             <div className="px-4 py-4 sm:px-6 bg-emerald-900 text-white flex justify-between items-center sticky top-0 z-10">
               <div>
-                <h3 className="text-base font-bold m-0 text-white">Download Legal Document</h3>
+                <h3 className="text-base font-bold m-0 text-white">{t('downloadLegalDocument')}</h3>
                 <p className="text-[10px] text-emerald-200 m-0">
                   {APP_NAME} · v{SOFTWARE_VERSION}
                 </p>
@@ -356,11 +362,14 @@ export default function WizardForm() {
             </div>
             <div className="p-6 space-y-4 bg-slate-50">
               <div className="bg-white p-4 rounded-xl border border-slate-200 text-center">
-                <div className="text-[10px] font-bold text-slate-400 uppercase">Service Charge</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase">{t('serviceCharge')}</div>
                 <div className="text-3xl font-black text-emerald-950">₹{PDF_DOWNLOAD_PRICE_INR}.00</div>
                 <p className="text-[10px] text-slate-500 m-0 mt-1">
-                  Inclusive of GST ({gstBreakup.ratePercent}%) · Taxable {formatInr(gstBreakup.taxableValue)} + GST{' '}
-                  {formatInr(gstBreakup.gstAmount)}
+                  {t('inclusiveOfGst', {
+                    rate: gstBreakup.ratePercent,
+                    taxable: formatInr(gstBreakup.taxableValue),
+                    gst: formatInr(gstBreakup.gstAmount),
+                  })}
                 </p>
               </div>
 
@@ -383,7 +392,7 @@ export default function WizardForm() {
                         paymentMethod === 'card' ? 'bg-emerald-800 text-white' : 'bg-white'
                       }`}
                     >
-                      Card
+                      {t('mockCard')}
                     </button>
                   </div>
                   <input
@@ -403,7 +412,7 @@ export default function WizardForm() {
                     }}
                     className="w-full py-2.5 rounded-lg bg-emerald-700 text-white text-sm font-bold cursor-pointer border-0"
                   >
-                    Pay ₹{PDF_DOWNLOAD_PRICE_INR} (Demo)
+                    {t('payDemo', { amount: PDF_DOWNLOAD_PRICE_INR })}
                   </button>
                 </div>
               )}
@@ -411,16 +420,18 @@ export default function WizardForm() {
               {paymentStep === 'processing' && (
                 <div className="text-center py-8">
                   <Loader2 className="animate-spin mx-auto text-emerald-700" />
-                  <p className="text-xs text-slate-500 mt-2">Processing…</p>
+                  <p className="text-xs text-slate-500 mt-2">{t('processing')}</p>
                 </div>
               )}
 
               {paymentStep === 'success' && (
                 <div className="space-y-3 text-center">
                   <CheckCircle className="mx-auto text-emerald-600" size={36} />
-                  <p className="text-sm font-semibold m-0">Payment successful</p>
+                  <p className="text-sm font-semibold m-0">{t('paymentSuccessful')}</p>
                   {unlockPayment?.invoiceNo && (
-                    <p className="text-[10px] text-slate-500 m-0">Invoice {unlockPayment.invoiceNo}</p>
+                    <p className="text-[10px] text-slate-500 m-0">
+                      {t('invoiceLabel')} {unlockPayment.invoiceNo}
+                    </p>
                   )}
                   {downloadError && <p className="text-xs text-red-600">{downloadError}</p>}
                   <button
@@ -431,11 +442,11 @@ export default function WizardForm() {
                   >
                     {isGenerating ? (
                       <>
-                        <Loader2 size={16} className="animate-spin" /> Generating…
+                        <Loader2 size={16} className="animate-spin" /> {t('generating')}
                       </>
                     ) : (
                       <>
-                        <FileText size={16} /> Download PDF
+                        <FileText size={16} /> {t('downloadPdfBtn')}
                       </>
                     )}
                   </button>
@@ -447,11 +458,11 @@ export default function WizardForm() {
                   >
                     {isInvoiceGenerating ? (
                       <>
-                        <Loader2 size={16} className="animate-spin" /> Preparing invoice…
+                        <Loader2 size={16} className="animate-spin" /> {t('preparingInvoice')}
                       </>
                     ) : (
                       <>
-                        <Receipt size={16} /> Download Invoice
+                        <Receipt size={16} /> {t('downloadInvoiceBtn')}
                       </>
                     )}
                   </button>

@@ -8,7 +8,8 @@ import { ShieldCheck, Plus, Trash2, ClipboardList, Calendar, UserCheck } from 'l
 
 export default function StepComplianceChecklist({ errors = {} }) {
   const { formData, updateField, addListItem, removeListItem } = useDeedForm();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const locale = language === 'gu' ? 'gu' : 'en';
   const req = getDocumentRequirements(formData.documentType);
 
   const c = formData.compliance || {};
@@ -43,7 +44,7 @@ export default function StepComplianceChecklist({ errors = {} }) {
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <ShieldCheck size={18} className="text-emerald-700" />
           <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-            Section 34 Registration Act Compliance (નોંધણી કાયદો કલમ-૩૪ ચેકલિસ્ટ)
+            {t('complianceTitle')}
           </h3>
         </div>
 
@@ -63,8 +64,7 @@ export default function StepComplianceChecklist({ errors = {} }) {
                 className="w-4 h-4 text-emerald-800 border-slate-300 rounded focus:ring-emerald-500 cursor-pointer mt-0.5"
               />
               <div className="text-xs leading-normal">
-                <span className="font-bold text-slate-850 block">{item.gu}</span>
-                <span className="text-slate-500">{item.en}</span>
+                <span className="font-bold text-slate-850 block">{item[locale] || item.en}</span>
               </div>
             </label>
           ))}
@@ -78,7 +78,7 @@ export default function StepComplianceChecklist({ errors = {} }) {
           <div className="flex items-center gap-2">
             <ClipboardList size={18} className="text-emerald-700" />
             <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-              Ownership Chain & Title History (માલિકી હક્ક સાંકળ)
+              {t('titleHistorySection')}
             </h3>
           </div>
           <button
@@ -87,13 +87,13 @@ export default function StepComplianceChecklist({ errors = {} }) {
             className="inline-flex items-center gap-1 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-md border border-emerald-100 transition-colors duration-200 cursor-pointer"
           >
             <Plus size={14} />
-            Add Milestone (નોંધણી ઉમેરો)
+            {t('addMilestoneBtn')}
           </button>
         </div>
 
         {history.length === 0 ? (
           <p className="text-xs text-slate-400 italic text-center py-4 bg-slate-50 rounded-lg border border-dashed border-slate-200">
-            No milestones added. Please insert historical transactions, inheritances, or NA conversions to track the title chain.
+            {t('noMilestones')}
           </p>
         ) : (
           <div className="space-y-4">
@@ -105,7 +105,7 @@ export default function StepComplianceChecklist({ errors = {} }) {
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex items-center gap-1">
                       <Calendar size={12} />
-                      Milestone Entry #{idx + 1}
+                      {t('milestoneEntry')} #{idx + 1}
                     </span>
                     <button
                       onClick={() => removeListItem('titleHistory', idx)}
@@ -119,7 +119,7 @@ export default function StepComplianceChecklist({ errors = {} }) {
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                     {/* Entry Number */}
                     <div className="md:col-span-4">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">Entry / Mutation No. (નોંધણી નંબર)</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('entryMutationNo')}</label>
                       <input
                         type="text"
                         value={milestone.entryNo || ''}
@@ -131,7 +131,7 @@ export default function StepComplianceChecklist({ errors = {} }) {
 
                     {/* Entry Date */}
                     <div className="md:col-span-4">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">Date of Record (તારીખ)</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('dateOfRecord')}</label>
                       <input
                         type="date"
                         value={milestone.date || ''}
@@ -142,7 +142,7 @@ export default function StepComplianceChecklist({ errors = {} }) {
 
                     {/* Description */}
                     <div className="md:col-span-12">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">Mutation Milestone Description (કાયદાકીય ફેરફારની વિગતો)</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('mutationDesc')}</label>
                       <textarea
                         value={milestone.description || ''}
                         onChange={(e) => updateField(`${pathPrefix}.description`, e.target.value)}
@@ -165,12 +165,12 @@ export default function StepComplianceChecklist({ errors = {} }) {
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <ClipboardList size={18} className="text-slate-700" />
           <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-            Witness Details (સાક્ષીઓની વિગત — 2 Required)
+            {t('witnessDetails')}
           </h3>
         </div>
         {errors.witnesses && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs font-semibold text-red-800">
-            ⚠️ Please complete all witness details including passport photos.
+            ⚠️ {t('completeWitnessDetails')}
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -178,32 +178,32 @@ export default function StepComplianceChecklist({ errors = {} }) {
             const we = errors.witnesses?.[idx] || {};
             return (
             <div key={idx} className="p-4 bg-slate-50/50 rounded-xl border border-slate-200 space-y-3">
-              <div className="text-xs font-bold text-slate-500">Witness #{idx + 1} (સાક્ષી {idx + 1}) — Must attend SRO in person</div>
+              <div className="text-xs font-bold text-slate-500">{t('witnessN', { n: idx + 1 })}</div>
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Full Name</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{t('fullName')}</label>
                 <input type="text" value={witness.name || ''} onChange={(e) => updateField(`witnesses.${idx}.name`, e.target.value)}
                   className={`w-full text-xs px-2.5 py-1.5 rounded border bg-white ${we.name ? 'border-red-300' : 'border-slate-250'}`} placeholder="Witness full name" />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Address</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{t('address')}</label>
                 <input type="text" value={witness.address || ''} onChange={(e) => updateField(`witnesses.${idx}.address`, e.target.value)}
                   className={`w-full text-xs px-2.5 py-1.5 rounded border bg-white ${we.address ? 'border-red-300' : 'border-slate-250'}`} placeholder="Full address" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">PAN</label>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{t('pan')}</label>
                   <input type="text" value={witness.pan || ''} onChange={(e) => updateField(`witnesses.${idx}.pan`, e.target.value.toUpperCase())}
                     className={`w-full text-xs px-2.5 py-1.5 rounded border bg-white font-mono ${we.pan ? 'border-red-300' : 'border-slate-250'}`} placeholder="ABCDE1234F" />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Aadhaar</label>
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">{t('aadhaar')}</label>
                   <input type="text" value={witness.aadhaar || ''} onChange={(e) => updateField(`witnesses.${idx}.aadhaar`, e.target.value)}
                     className={`w-full text-xs px-2.5 py-1.5 rounded border bg-white font-mono ${we.aadhaar ? 'border-red-300' : 'border-slate-250'}`} placeholder="1234 5678 9012" />
                 </div>
               </div>
               <PhotoUploadField
-                label="Witness Passport Photo (Optional)"
-                subLabel="Leave empty — paste at SRO if needed"
+                label={t('witnessPhotoOptional')}
+                subLabel={t('leaveEmptyPaste')}
                 value={witness.photo || ''}
                 onChange={(v) => updateField(`witnesses.${idx}.photo`, v)}
                 error={we.photo}
@@ -218,27 +218,27 @@ export default function StepComplianceChecklist({ errors = {} }) {
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <UserCheck size={18} className="text-emerald-700" />
           <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-            Document Presenter / Identifier (રજૂ કરનાર)
+            {t('presenterDetails')}
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Presenter Name</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('presenterName')}</label>
             <input type="text" value={id.name || ''} onChange={(e) => updateField('identifier.name', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" placeholder="Advocate / Agent name" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Relation / Role</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('relationRole')}</label>
             <input type="text" value={id.relation || ''} onChange={(e) => updateField('identifier.relation', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" placeholder="Advocate / Document Presenter" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Presenter Aadhaar</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('presenterAadhaar')}</label>
             <input type="text" value={id.aadhaar || ''} onChange={(e) => updateField('identifier.aadhaar', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white font-mono" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Presenter Mobile</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('presenterMobile')}</label>
             <input type="tel" value={id.mobile || ''} onChange={(e) => updateField('identifier.mobile', e.target.value.replace(/\D/g, '').slice(0, 10))}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" />
           </div>
@@ -250,54 +250,54 @@ export default function StepComplianceChecklist({ errors = {} }) {
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <Calendar size={18} className="text-emerald-700" />
           <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-            Execution & Garvi Portal Details (અમલ અને ગરવી વિગત)
+            {t('executionDetails')}
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Execution Date (અમલ તારીખ)</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('executionDate')}</label>
             <input type="date" value={formData.execution?.executionDate || ''} onChange={(e) => updateField('execution.executionDate', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Possession Date (કબજો તારીખ)</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('possessionDate')}</label>
             <input type="date" value={formData.execution?.possessionDate || ''} onChange={(e) => updateField('execution.possessionDate', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Place of Execution (અમલ સ્થળ)</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('placeOfExecution')}</label>
             <input type="text" value={formData.execution?.executionPlace || ''} onChange={(e) => updateField('execution.executionPlace', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
               placeholder="Sub-Registrar Office, District" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Garvi Application No. <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('garviApplicationNo')} <span className="text-red-500">*</span></label>
             <input type="text" value={ex.garviApplicationNo || ''} onChange={(e) => updateField('execution.garviApplicationNo', e.target.value)}
               className={`w-full text-sm px-3 py-2 rounded-lg border bg-white font-mono focus:outline-none focus:border-emerald-600 ${errors.garviApplicationNo ? 'border-red-300' : 'border-slate-250'}`}
               placeholder="GARVI-2026-XXX-XXXXXX" />
             {errors.garviApplicationNo && <p className="text-[10px] text-red-600 mt-1">{errors.garviApplicationNo}</p>}
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Garvi Appointment Date</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('garviAppointmentDate')}</label>
             <input type="date" value={ex.garviAppointmentDate || ''} onChange={(e) => updateField('execution.garviAppointmentDate', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Appointment Time Slot</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('appointmentTimeSlot')}</label>
             <input type="text" value={ex.garviAppointmentSlot || ''} onChange={(e) => updateField('execution.garviAppointmentSlot', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" placeholder="11:00 AM - 11:15 AM" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Presenting Party Mobile</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('presentingPartyMobile')}</label>
             <input type="tel" value={ex.presentingPartyMobile || ''} onChange={(e) => updateField('execution.presentingPartyMobile', e.target.value.replace(/\D/g, '').slice(0, 10))}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Possession Type</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('possessionType')}</label>
             <select value={formData.execution?.possessionType || 'immediate'} onChange={(e) => updateField('execution.possessionType', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600">
-              <option value="immediate">Immediate / તાત્કાલિક</option>
-              <option value="future">Future Date / ભવિષ્ય તારીખ</option>
+              <option value="immediate">{t('immediatePossession')}</option>
+              <option value="future">{t('futurePossession')}</option>
             </select>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Camera, X, Upload } from 'lucide-react';
 import { readImageAsDataUrl } from '../utils/imageUpload';
+import { useLanguage } from '../context/LanguageContext';
 
 /**
  * Passport / property photo upload — required by Gujarat SRO for registration packet
@@ -13,11 +14,13 @@ export default function PhotoUploadField({
   required = false,
   error,
   aspect = 'portrait', // portrait | landscape
-  sizeHint = '3.5 × 4.5 cm passport size, max 400 KB',
+  sizeHint,
 }) {
+  const { t } = useLanguage();
   const inputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState('');
+  const hint = sizeHint ?? t('passportSizeHint');
 
   const handleFile = async (e) => {
     const file = e.target.files?.[0];
@@ -68,7 +71,7 @@ export default function PhotoUploadField({
             className="inline-flex items-center gap-1 text-[10px] font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded border border-emerald-200 cursor-pointer disabled:opacity-60"
           >
             <Upload size={12} />
-            {loading ? 'Uploading...' : value ? 'Replace Photo' : 'Upload Photo'}
+            {loading ? t('uploading') : value ? t('replacePhoto') : t('uploadPhoto')}
           </button>
           {value && (
             <button
@@ -76,11 +79,11 @@ export default function PhotoUploadField({
               onClick={() => onChange('')}
               className="inline-flex items-center gap-1 text-[10px] font-semibold text-red-600 hover:text-red-700 cursor-pointer"
             >
-              <X size={12} /> Remove
+              <X size={12} /> {t('removePhoto')}
             </button>
           )}
           <span className={`text-[9px] text-slate-400 leading-snug ${isLandscape ? 'w-full' : 'max-w-[140px]'}`}>
-            {sizeHint}
+            {hint}
           </span>
         </div>
       </div>

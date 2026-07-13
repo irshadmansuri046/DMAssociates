@@ -49,7 +49,7 @@ export default function StepPartyDetails({ errors = {} }) {
 
         {list.length === 0 && (
           <p className="text-xs text-slate-400 italic text-center py-4 bg-slate-55/30 bg-slate-50 rounded-lg border border-dashed border-slate-200">
-            No entries. Please click the button to add a party.
+            {t('noPartyEntries')}
           </p>
         )}
 
@@ -64,7 +64,7 @@ export default function StepPartyDetails({ errors = {} }) {
                   onClick={() => removeFn(`parties.${type}`, index)}
                   type="button"
                   className="absolute top-3 right-3 text-slate-400 hover:text-red-600 transition-colors duration-150 cursor-pointer p-1"
-                  title="Remove Party"
+                  title={t('removeParty')}
                 >
                   <Trash2 size={16} />
                 </button>
@@ -86,13 +86,13 @@ export default function StepPartyDetails({ errors = {} }) {
                     }}
                     className="text-xs px-2 py-2 rounded border border-slate-250 bg-white w-full sm:w-auto min-h-[40px]"
                   >
-                    <option value="individual">Individual</option>
-                    <option value="company">Company</option>
-                    <option value="partnership">Partnership</option>
-                    <option value="llp">LLP</option>
-                    <option value="trust">Trust</option>
-                    <option value="society">Society</option>
-                    <option value="government">Government</option>
+                    <option value="individual">{t('partyTypeIndividual')}</option>
+                    <option value="company">{t('partyTypeCompany')}</option>
+                    <option value="partnership">{t('partyTypePartnership')}</option>
+                    <option value="llp">{t('partyTypeLlp')}</option>
+                    <option value="trust">{t('partyTypeTrust')}</option>
+                    <option value="society">{t('partyTypeSociety')}</option>
+                    <option value="government">{t('partyTypeGovernment')}</option>
                   </select>
                   <label className="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-slate-600">
                   <input
@@ -118,7 +118,7 @@ export default function StepPartyDetails({ errors = {} }) {
                     className="w-3.5 h-3.5 text-emerald-800 border-slate-300 rounded focus:ring-emerald-500 focus:ring-opacity-20 cursor-pointer"
                   />
                   <Building2 size={14} className="text-slate-500 shrink-0" />
-                  <span>Corporate Entity</span>
+                  <span>{t('corporateEntity')}</span>
                 </label>
                 </div>
               </div>
@@ -127,7 +127,7 @@ export default function StepPartyDetails({ errors = {} }) {
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                 <div className={party.isCorporate ? "md:col-span-8" : "md:col-span-12"}>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    {party.isCorporate ? "Company / Legal Entity Name" : t('fullName')} <span className="text-red-500">*</span>
+                    {party.isCorporate ? t('companyLegalName') : t('fullName')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -145,7 +145,7 @@ export default function StepPartyDetails({ errors = {} }) {
                 {party.isCorporate && (
                   <div className="md:col-span-4">
                     <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Company CIN <span className="text-red-500">*</span>
+                      {t('companyCin')} <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -169,7 +169,7 @@ export default function StepPartyDetails({ errors = {} }) {
                     {/* Authorised Signatory */}
                     <div className="md:col-span-8">
                       <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        Authorised Signatory (Name & Designation) <span className="text-red-500">*</span>
+                        {t('authorisedSignatory')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -186,7 +186,7 @@ export default function StepPartyDetails({ errors = {} }) {
                     {/* Resolution Date */}
                     <div className="md:col-span-4">
                       <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        Board Resolution Date
+                        {t('boardResolutionDate')}
                       </label>
                       <input
                         type="date"
@@ -199,7 +199,7 @@ export default function StepPartyDetails({ errors = {} }) {
 
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                     <div className="md:col-span-4">
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Signatory Age</label>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">{t('signatoryAge')}</label>
                       <input
                         type="text"
                         value={party.signatoryAge || ''}
@@ -209,7 +209,7 @@ export default function StepPartyDetails({ errors = {} }) {
                       />
                     </div>
                     <div className="md:col-span-4">
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Signatory Occupation</label>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">{t('signatoryOccupation')}</label>
                       <input
                         type="text"
                         value={party.signatoryOccupation || ''}
@@ -219,7 +219,7 @@ export default function StepPartyDetails({ errors = {} }) {
                       />
                     </div>
                     <div className="md:col-span-4">
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Signatory Religion / Caste</label>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">{t('signatoryReligion')}</label>
                       <input
                         type="text"
                         value={party.signatoryReligion || ''}
@@ -234,7 +234,7 @@ export default function StepPartyDetails({ errors = {} }) {
                     {/* PAN */}
                     <div className="md:col-span-4">
                       <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        Company PAN <span className="text-red-500">*</span>
+                        {t('companyPan')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -252,7 +252,7 @@ export default function StepPartyDetails({ errors = {} }) {
                     {/* Registered Office */}
                     <div className="md:col-span-8">
                       <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        Registered Office Address <span className="text-red-500">*</span>
+                        {t('registeredOfficeAddress')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -310,7 +310,7 @@ export default function StepPartyDetails({ errors = {} }) {
 
                     {/* Religion */}
                     <div className="md:col-span-4">
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Religion / Caste (જાતના)</label>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">{t('religionCaste')}</label>
                       <input
                         type="text"
                         value={party.religion || party.caste || ''}
@@ -362,7 +362,7 @@ export default function StepPartyDetails({ errors = {} }) {
                     {/* Address */}
                     <div className="md:col-span-8">
                       <label className="block text-xs font-semibold text-slate-700 mb-1">
-                        Residential Address <span className="text-red-500">*</span>
+                        {t('residentialAddress')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -383,7 +383,7 @@ export default function StepPartyDetails({ errors = {} }) {
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pt-2 border-t border-slate-100">
                 <div className="md:col-span-4">
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Mobile (Garvi Portal) <span className="text-red-500">*</span>
+                    {t('mobileGarvi')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -397,7 +397,7 @@ export default function StepPartyDetails({ errors = {} }) {
                   {itemErrors.mobile && <p className="text-[10px] text-red-650 mt-1">{itemErrors.mobile}</p>}
                 </div>
                 <div className="md:col-span-4">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Email (optional)</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">{t('emailOptional')}</label>
                   <input
                     type="email"
                     value={party.email || ''}
@@ -408,8 +408,8 @@ export default function StepPartyDetails({ errors = {} }) {
                 </div>
                 <div className="md:col-span-4">
                   <PhotoUploadField
-                    label={party.isCorporate ? "Signatory Photo (Optional)" : "Passport Photo (Optional)"}
-                    subLabel="Uploaded photo appears in the PDF; leave empty for a paste box"
+                    label={party.isCorporate ? t('signatoryPhotoOptional') : t('passportPhotoOptional')}
+                    subLabel={t('photoAppearsInPdf')}
                     value={party.photo || ''}
                     onChange={(v) => updateField(`${pathPrefix}.photo`, v)}
                     error={itemErrors.photo}
@@ -428,7 +428,7 @@ export default function StepPartyDetails({ errors = {} }) {
       {typeof errors.sellers === 'string' && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs font-semibold text-red-800">{errors.sellers}</div>
       )}
-      {renderPartyInputs('sellers', sellers, handleAddSeller, removeListItem, firstTitle, locale === 'gu' ? 'ઉમેરો' : 'Add')}
+      {renderPartyInputs('sellers', sellers, handleAddSeller, removeListItem, firstTitle, t('addParty'))}
 
       {req.minBuyers > 0 && (
         <>
@@ -436,15 +436,13 @@ export default function StepPartyDetails({ errors = {} }) {
           {typeof errors.buyers === 'string' && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs font-semibold text-red-800">{errors.buyers}</div>
           )}
-          {renderPartyInputs('buyers', buyers, handleAddBuyer, removeListItem, secondTitle, locale === 'gu' ? 'ઉમેરો' : 'Add')}
+          {renderPartyInputs('buyers', buyers, handleAddBuyer, removeListItem, secondTitle, t('addParty'))}
         </>
       )}
 
       {req.minSellers > 1 && (
         <p className="text-xs text-slate-500 m-0">
-          {locale === 'gu'
-            ? `આ દસ્તાવેજ પ્રકાર માટે ઓછામાં ઓછા ${req.minSellers} પક્ષકારો જરૂરી છે.`
-            : `This document type requires at least ${req.minSellers} co-owners / first parties.`}
+          {t('requiresMinParties', { count: req.minSellers })}
         </p>
       )}
     </div>

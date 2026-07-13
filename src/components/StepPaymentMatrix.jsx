@@ -10,7 +10,7 @@ import { Plus, Trash2, CreditCard, Receipt, Info, Sparkles, FileSignature } from
 
 export default function StepPaymentMatrix({ errors = {} }) {
   const { formData, updateField, addListItem, removeListItem } = useDeedForm();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const locale = language === 'gu' ? 'gu' : 'en';
   const req = getDocumentRequirements(formData.documentType);
   const amountLabel = getAmountFieldLabel(formData.documentType, locale);
@@ -50,7 +50,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <CreditCard size={18} className="text-emerald-700" />
           <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-            {locale === 'gu' ? 'નાણાકીય વિગતો' : 'Financial Details'}
+            {t('financialDetails')}
           </h3>
         </div>
 
@@ -77,7 +77,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
           {req.showPaymentInstallments && (
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Primary Settlement Mode
+              {t('primarySettlementMode')}
             </label>
             <select
               value={tr.paymentMode || 'Cheque'}
@@ -98,7 +98,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
           <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-xl flex gap-3 animate-in fade-in slide-in-from-top duration-250">
             <Sparkles className="text-emerald-700 shrink-0 mt-0.5" size={18} />
             <div className="text-xs text-emerald-800 leading-snug">
-              <span className="font-bold">Section 194-IA (Income Tax Act) Active:</span> Since the transaction amount is ₹50 Lakhs or more, a <span className="font-bold">1% TDS (₹{tdsAmount.toLocaleString('en-IN')})</span> is deductible from the sale value. The Vendee (Buyer) must file Form 26QB and deposit this amount to the IT department.
+              {t('tdsActiveBanner', { amount: tdsAmount.toLocaleString('en-IN') })}
             </div>
           </div>
         ) : (
@@ -106,7 +106,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex gap-3">
               <Info className="text-slate-500 shrink-0 mt-0.5" size={16} />
               <p className="text-[11px] text-slate-500 leading-snug m-0">
-                TDS threshold not reached. 1% TDS under Section 194-IA is only applicable for property consideration values ≥ ₹50,00,000.
+                {t('tdsNotReached')}
               </p>
             </div>
           )
@@ -114,24 +114,24 @@ export default function StepPaymentMatrix({ errors = {} }) {
 
         {req.showTds && tdsActive && (
           <div className="space-y-4 p-4 bg-amber-50/50 border border-amber-200 rounded-xl">
-            <h4 className="text-xs font-bold text-amber-900 m-0 uppercase">TDS Form 26QB Details (Section 194-IA)</h4>
+            <h4 className="text-xs font-bold text-amber-900 m-0 uppercase">{t('tdsForm26qbTitle')}</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Form 26QB Acknowledgement <span className="text-red-500">*</span></label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('tdsForm26qbAck')} <span className="text-red-500">*</span></label>
                 <input type="text" value={tr.tdsForm26QB || ''} onChange={(e) => updateField('transaction.tdsForm26QB', e.target.value)}
                   className={`w-full text-sm px-3 py-2 rounded-lg border bg-white font-mono ${errors.tdsForm26QB ? 'border-red-300' : 'border-slate-250'}`}
                   placeholder="26QB-202607-XXXXXXX" />
                 {errors.tdsForm26QB && <p className="text-[10px] text-red-600 mt-1">{errors.tdsForm26QB}</p>}
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">TDS Challan No. <span className="text-red-500">*</span></label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('tdsChallanNo')} <span className="text-red-500">*</span></label>
                 <input type="text" value={tr.tdsChallanNo || ''} onChange={(e) => updateField('transaction.tdsChallanNo', e.target.value)}
                   className={`w-full text-sm px-3 py-2 rounded-lg border bg-white font-mono ${errors.tdsChallanNo ? 'border-red-300' : 'border-slate-250'}`}
                   placeholder="TDS/194IA/XXXX/2026" />
                 {errors.tdsChallanNo && <p className="text-[10px] text-red-600 mt-1">{errors.tdsChallanNo}</p>}
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">TDS Payment Date</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('tdsPaymentDate')}</label>
                 <input type="date" value={tr.tdsPaidDate || ''} onChange={(e) => updateField('transaction.tdsPaidDate', e.target.value)}
                   className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" />
               </div>
@@ -146,7 +146,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <FileSignature size={18} className="text-emerald-700" />
             <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-              {locale === 'gu' ? 'દસ્તાવેજ-વિશિષ્ટ વિગતો' : 'Document-specific particulars'}
+              {t('documentSpecificParticulars')}
             </h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -221,7 +221,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-            Payment Installments Matrix (અવેજ ચુકવણી કોષ્ટક)
+            {t('paymentInstallmentsMatrix')}
           </h3>
           <button
             onClick={handleAddPayment}
@@ -229,7 +229,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
             className="inline-flex items-center gap-1 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-md border border-emerald-100 transition-colors duration-200 cursor-pointer"
           >
             <Plus size={14} />
-            Add Entry (ચુકવણી ઉમેરો)
+            {t('addEntry')}
           </button>
         </div>
 
@@ -241,7 +241,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
 
         {payments.length === 0 ? (
           <p className="text-xs text-slate-400 italic text-center py-4 bg-slate-50 rounded-lg border border-dashed border-slate-200">
-            No entries. Click "Add Entry" to split your consideration payment.
+            {t('noPaymentEntries')}
           </p>
         ) : (
           <div className="space-y-4">
@@ -252,7 +252,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
               return (
                 <div key={idx} className="relative p-4 bg-white border border-slate-200 rounded-xl shadow-sm space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Installment #{idx + 1}</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{t('installment')} #{idx + 1}</span>
                     <button
                       onClick={() => removeListItem('transaction.payments', idx)}
                       type="button"
@@ -265,7 +265,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                     {/* Payment Mode */}
                     <div className="md:col-span-3">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">Mode</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('mode')}</label>
                       <select
                         value={payment.mode || 'RTGS'}
                         onChange={(e) => updateField(`${pathPrefix}.mode`, e.target.value)}
@@ -286,7 +286,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
 
                     {/* Bank Name */}
                     <div className="md:col-span-3">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">Bank Name</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('bankName')}</label>
                       <input
                         type="text"
                         value={payment.bankName || ''}
@@ -300,7 +300,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
 
                     {/* Branch Name */}
                     <div className="md:col-span-2">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">Branch</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('branch')}</label>
                       <input
                         type="text"
                         value={payment.branchName || ''}
@@ -312,7 +312,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
 
                     {/* UTR / Instrument */}
                     <div className="md:col-span-4">
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">UTR / Instrument No.</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('utrInstrumentNo')}</label>
                       <input
                         type="text"
                         value={payment.instrumentNo || ''}
@@ -328,7 +328,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Date */}
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">Transaction Date</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('transactionDate')}</label>
                       <input
                         type="date"
                         value={payment.date || ''}
@@ -341,7 +341,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
 
                     {/* Amount */}
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-500 uppercase">Amount (₹)</label>
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase">{t('amountInr')}</label>
                       <input
                         type="number"
                         value={payment.amount || ''}
@@ -363,26 +363,26 @@ export default function StepPaymentMatrix({ errors = {} }) {
         {totalSaleAmount > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 text-center">
             <div className="space-y-0.5">
-              <div className="text-[9px] font-bold text-slate-400 uppercase">Total Target Value</div>
+              <div className="text-[9px] font-bold text-slate-400 uppercase">{t('totalTargetValue')}</div>
               <div className="text-sm font-bold text-slate-800">₹{totalSaleAmount.toLocaleString('en-IN')}</div>
             </div>
             <div className="space-y-0.5">
-              <div className="text-[9px] font-bold text-slate-400 uppercase">Sum of Installments</div>
+              <div className="text-[9px] font-bold text-slate-400 uppercase">{t('sumOfInstallments')}</div>
               <div className={`text-sm font-bold ${remainingPaid === 0 ? 'text-emerald-700' : 'text-slate-805'}`}>
                 ₹{totalPaid.toLocaleString('en-IN')}
               </div>
             </div>
             <div className="space-y-0.5">
-              <div className="text-[9px] font-bold text-slate-400 uppercase">Balance Status</div>
+              <div className="text-[9px] font-bold text-slate-400 uppercase">{t('balanceStatus')}</div>
               {remainingPaid === 0 ? (
-                <div className="text-xs font-semibold text-emerald-800 bg-emerald-100 rounded px-1.5 py-0.5 inline-block">Matched</div>
+                <div className="text-xs font-semibold text-emerald-800 bg-emerald-100 rounded px-1.5 py-0.5 inline-block">{t('matched')}</div>
               ) : remainingPaid > 0 ? (
                 <div className="text-xs font-semibold text-amber-800 bg-amber-100 rounded px-1.5 py-0.5 inline-block">
-                  Remaining: ₹{remainingPaid.toLocaleString('en-IN')}
+                  {t('remaining')}: ₹{remainingPaid.toLocaleString('en-IN')}
                 </div>
               ) : (
                 <div className="text-xs font-semibold text-red-800 bg-red-100 rounded px-1.5 py-0.5 inline-block">
-                  Overpaid: ₹{Math.abs(remainingPaid).toLocaleString('en-IN')}
+                  {t('overpaid')}: ₹{Math.abs(remainingPaid).toLocaleString('en-IN')}
                 </div>
               )}
             </div>
@@ -397,7 +397,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <Receipt size={18} className="text-emerald-700" />
           <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-            Stamp Duty & Registration Receipts (ઇ-ચલાન પાવતી)
+            {t('stampDutyRegReceipts')}
           </h3>
         </div>
 
@@ -405,7 +405,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
           {/* Stamp Duty Receipt */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Stamp Duty Receipt No. (GRAS) <span className="text-red-500">*</span>
+              {t('stampDutyReceiptGras')} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -422,7 +422,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
           {/* Stamp Duty Amount */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Stamp Duty Paid (₹) <span className="text-red-500">*</span>
+              {t('stampDutyPaid')} <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
@@ -441,7 +441,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
           {/* Reg Fee Receipt */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Registration Fee Receipt No. (GRAS) <span className="text-red-500">*</span>
+              {t('regFeeReceiptGras')} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -458,7 +458,7 @@ export default function StepPaymentMatrix({ errors = {} }) {
           {/* Reg Fee Amount */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Registration Fee Paid (₹) <span className="text-red-500">*</span>
+              {t('regFeePaid')} <span className="text-red-500">*</span>
             </label>
             <input
               type="number"

@@ -38,7 +38,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
         if (!cancelled) setDistricts(rows);
       })
       .catch((err) => {
-        if (!cancelled) setLoadError(err.message || 'Could not load Gujarat districts');
+        if (!cancelled) setLoadError(err.message || t('loadLocationsError'));
       })
       .finally(() => {
         if (!cancelled) setLoading((s) => ({ ...s, districts: false }));
@@ -60,7 +60,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
         if (!cancelled) setTalukas(rows);
       })
       .catch((err) => {
-        if (!cancelled) setLoadError(err.message || 'Could not load talukas');
+        if (!cancelled) setLoadError(err.message || t('loadLocationsError'));
       })
       .finally(() => {
         if (!cancelled) setLoading((s) => ({ ...s, talukas: false }));
@@ -82,7 +82,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
         if (!cancelled) setPlaces(rows);
       })
       .catch((err) => {
-        if (!cancelled) setLoadError(err.message || 'Could not load villages/cities');
+        if (!cancelled) setLoadError(err.message || t('loadLocationsError'));
       })
       .finally(() => {
         if (!cancelled) setLoading((s) => ({ ...s, places: false }));
@@ -122,7 +122,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
         }
       })
       .catch((err) => {
-        if (!cancelled) setLoadError(err.message || 'Could not load SRO offices');
+        if (!cancelled) setLoadError(err.message || t('loadLocationsError'));
       })
       .finally(() => {
         if (!cancelled) setLoading((s) => ({ ...s, sros: false }));
@@ -242,7 +242,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
             disabled={loading.districts}
             className={selectClass(errors.district)}
           >
-            <option value="">{loading.districts ? 'Loading districts…' : 'Select district'}</option>
+            <option value="">{loading.districts ? t('loadingDistricts') : t('selectDistrict')}</option>
             {districts.map((d) => (
               <option key={d.id} value={d.id}>
                 {locationLabel(d, language)}
@@ -263,7 +263,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
             className={selectClass(errors.taluka)}
           >
             <option value="">
-              {!districtId ? 'Select district first' : loading.talukas ? 'Loading talukas…' : 'Select taluka'}
+              {!districtId ? t('selectDistrictFirst') : loading.talukas ? t('loadingTalukas') : t('selectTaluka')}
             </option>
             {talukas.map((d) => (
               <option key={d.id} value={d.id}>
@@ -278,7 +278,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1">
-            Village / City (Moje / મોજે) <span className="text-red-500">*</span>
+            {t('villageOrCity')} <span className="text-red-500">*</span>
           </label>
           <select
             value={otherPlace ? OTHER_PLACE : placeId}
@@ -287,7 +287,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
             className={selectClass(errors.village)}
           >
             <option value="">
-              {!talukaId ? 'Select taluka first' : loading.places ? 'Loading places…' : 'Select village / city'}
+              {!talukaId ? t('selectTalukaFirst') : loading.places ? t('loadingPlaces') : t('selectVillageCity')}
             </option>
             {places.map((d) => (
               <option key={d.id} value={d.id}>
@@ -295,9 +295,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
                 {d.placeType && d.placeType !== 'village' ? ` (${placeTypeLabel(d.placeType)})` : ''}
               </option>
             ))}
-            <option value={OTHER_PLACE}>
-              {language === 'gu' ? 'અન્ય (ગામનું નામ લખો)' : 'Other (type village name)'}
-            </option>
+            <option value={OTHER_PLACE}>{t('otherVillage')}</option>
           </select>
           {otherPlace && (
             <input
@@ -305,7 +303,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
               value={property.village || ''}
               onChange={(e) => updateField('property.village', e.target.value)}
               className={`mt-2 ${selectClass(errors.village)}`}
-              placeholder="Enter village / city name"
+              placeholder={t('enterVillageName')}
             />
           )}
           {errors.village && <p className="text-[10px] text-red-600 mt-1">{errors.village}</p>}
@@ -324,12 +322,12 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
             {sros.length !== 1 && (
               <option value="">
                 {!talukaId
-                  ? 'Select taluka / village first'
+                  ? t('selectTalukaVillageFirst')
                   : loading.sros
-                    ? 'Loading offices…'
+                    ? t('loadingOffices')
                     : sros.length === 0
-                      ? 'No office found'
-                      : 'Select Sub-Registrar office'}
+                      ? t('noOfficeFound')
+                      : t('selectSro')}
               </option>
             )}
             {sros.map((d) => (
@@ -339,7 +337,7 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
             ))}
           </select>
           {sros.length === 1 && (
-            <p className="text-[10px] text-emerald-700 mt-1 m-0">Auto-selected (only office for this area)</p>
+            <p className="text-[10px] text-emerald-700 mt-1 m-0">{t('autoSelectedSro')}</p>
           )}
           {errors.subRegistrarOffice && (
             <p className="text-[10px] text-red-600 mt-1">{errors.subRegistrarOffice}</p>

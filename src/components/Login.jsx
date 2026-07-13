@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Lock, Mail, AlertCircle, FileText } from 'lucide-react';
+import { Lock, Mail, AlertCircle, FileText, Globe } from 'lucide-react';
 import { loginWithEmailPassword, saveSession } from '../services/authService';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Login({ onLoginSuccess }) {
+  const { language, setLanguage, t } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,7 +20,7 @@ export default function Login({ onLoginSuccess }) {
       saveSession(user);
       onLoginSuccess(user);
     } catch (err) {
-      setError(err.message || 'Invalid email or password.');
+      setError(err.message || t('invalidCredentials'));
       setIsLoading(false);
     }
   };
@@ -28,20 +30,30 @@ export default function Login({ onLoginSuccess }) {
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-900/20 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-amber-950/20 blur-[120px] pointer-events-none" />
 
+      <button
+        type="button"
+        onClick={() => setLanguage(language === 'en' ? 'gu' : 'en')}
+        className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700 cursor-pointer"
+        aria-label={t('toggleLanguageAria')}
+      >
+        <Globe size={14} />
+        {t('toggleLanguage')}
+      </button>
+
       <div className="w-full max-w-md bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-2xl relative z-10 animate-in fade-in zoom-in-95 duration-500">
         <div className="flex flex-col items-center mb-8">
           <div className="bg-gradient-to-tr from-amber-500 to-emerald-600 p-4 rounded-2xl text-emerald-950 shadow-lg shadow-emerald-500/10 mb-4 animate-bounce duration-1000">
             <FileText size={32} className="stroke-[2.5] text-white" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-white">DM Associates</h2>
-          <p className="text-xs text-slate-400 mt-1">Legal Document Generator · Gujarat</p>
+          <p className="text-xs text-slate-400 mt-1">{t('legalDocGeneratorGujarat')}</p>
         </div>
 
         {error && (
           <div className="mb-6 p-4 bg-red-950/40 border border-red-800/60 rounded-xl flex items-start gap-3 text-red-200 text-xs animate-in shake duration-300">
             <AlertCircle size={16} className="shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold">Authentication Failed:</span> {error}
+              <span className="font-bold">{t('authFailed')}:</span> {error}
             </div>
           </div>
         )}
@@ -49,7 +61,7 @@ export default function Login({ onLoginSuccess }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-400 block" htmlFor="email-input">
-              Email Address
+              {t('emailAddress')}
             </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500 pointer-events-none">
@@ -70,7 +82,7 @@ export default function Login({ onLoginSuccess }) {
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-400 block" htmlFor="password-input">
-              Secret Access Password
+              {t('secretPassword')}
             </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500 pointer-events-none">
@@ -97,10 +109,10 @@ export default function Login({ onLoginSuccess }) {
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Verifying Access...
+                {t('verifyingAccess')}
               </span>
             ) : (
-              'Unlock Application'
+              t('unlockApp')
             )}
           </button>
         </form>

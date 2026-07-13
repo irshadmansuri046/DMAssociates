@@ -18,20 +18,20 @@ function App() {
     setSessionUser(null);
   };
 
-  if (!sessionUser) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
-  }
-
   return (
     <LanguageProvider>
-      <DeedFormProvider>
-        <div className="min-h-screen bg-slate-50 flex flex-col overflow-x-hidden">
-          <Navbar onLogout={handleLogout} sessionUser={sessionUser} />
-          <main className="flex-grow min-w-0">
-            <WizardForm />
-          </main>
-        </div>
-      </DeedFormProvider>
+      {!sessionUser ? (
+        <Login onLoginSuccess={handleLoginSuccess} />
+      ) : (
+        <DeedFormProvider>
+          <div className="min-h-screen bg-slate-50 flex flex-col overflow-x-hidden">
+            <Navbar onLogout={handleLogout} sessionUser={sessionUser} />
+            <main className="flex-grow min-w-0">
+              <WizardForm />
+            </main>
+          </div>
+        </DeedFormProvider>
+      )}
     </LanguageProvider>
   );
 }

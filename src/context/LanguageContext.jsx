@@ -16,8 +16,12 @@ export const LanguageProvider = ({ children }) => {
     }
   };
 
-  const t = (key) => {
-    return legalDictionary[language][key] || legalDictionary['en'][key] || key;
+  const t = (key, vars = {}) => {
+    let text = legalDictionary[language]?.[key] || legalDictionary.en?.[key] || key;
+    Object.keys(vars).forEach((k) => {
+      text = String(text).replace(new RegExp(`\\{${k}\\}`, 'g'), String(vars[k]));
+    });
+    return text;
   };
 
   const translateLegal = (key, variables = {}) => {
