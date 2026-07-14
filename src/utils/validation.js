@@ -59,7 +59,7 @@ function validateParty(party, requirePhoto = false) {
  */
 export function validateStep(stepIndex, data, stepKeys) {
   const errors = {};
-  const req = getDocumentRequirements(data.documentType || 'sale_deed');
+  const req = getDocumentRequirements(data.documentType || 'sale_deed_flat');
   const keys = stepKeys || ['parties', 'property', 'financial', 'compliance'].filter((k) => {
     if (k === 'financial') return req.showFinancialStep;
     return true;

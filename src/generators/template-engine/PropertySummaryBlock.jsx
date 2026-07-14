@@ -19,6 +19,7 @@ export function PropertySummaryBlock({ doc }) {
     ['District', p.district],
     ['Taluka', p.taluka || p.district],
     ['Village', p.village],
+    ['Moje / Mouza', p.moje || p.village],
     ['Survey No', p.blockSurveyNo || survey.blockSurveyNo],
     ['Block No', survey.blockSurveyNo || p.blockSurveyNo],
     ['City Survey', p.newCitySurveyNo || survey.newCitySurveyNo || gov.citySurvey?.citySurveyNo],

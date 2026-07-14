@@ -1,6 +1,7 @@
 import { validateSaleDeed, validateGiftDeed } from './rules/saleDeed';
 import { getDocumentRequirements } from '../constants/documentTypeRequirements';
 import { getPartyRoles } from '../constants/partyRoles';
+import { DEFAULT_DOCUMENT_TYPE, isSaleDeedType } from '../constants/documentTypes';
 
 function validateByRequirements(doc) {
   const req = getDocumentRequirements(doc.documentType);
@@ -66,6 +67,10 @@ function validateByRequirements(doc) {
 
 const RULES = {
   sale_deed: validateSaleDeed,
+  sale_deed_flat: validateSaleDeed,
+  sale_deed_house: validateSaleDeed,
+  sale_deed_farm_land: validateSaleDeed,
+  sale_deed_plot: validateSaleDeed,
   gift_deed: validateGiftDeed,
   mortgage: (doc) => validateByRequirements(doc),
   release_deed: (doc) => validateByRequirements(doc),
@@ -84,8 +89,8 @@ const RULES = {
 
 export const ValidationEngine = {
   validate(doc) {
-    const type = doc?.documentType || 'sale_deed';
-    const fn = RULES[type] || validateSaleDeed;
+    const type = doc?.documentType || DEFAULT_DOCUMENT_TYPE;
+    const fn = RULES[type] || (isSaleDeedType(type) ? validateSaleDeed : validateSaleDeed);
     const errors = fn(doc) || [];
     return {
       ok: errors.length === 0,

@@ -24,8 +24,11 @@ export function validateSaleDeed(doc) {
   if (!t.stampDutyAmount && t.stampDutyAmount !== 0) {
     errors.push(err('stampDutyAmount', 'Stamp duty amount is required'));
   }
-  const area = p.carpetArea || p.totalPlotArea || p.areas?.carpetArea || p.areas?.totalPlotArea;
-  if (!area) errors.push(err('area', 'Property area is required'));
+  const isFarm = doc.documentType === 'sale_deed_farm_land';
+  const area = isFarm
+    ? (p.soldAreaHeAreSqm || p.totalAreaHeAreSqm || p.totalPlotArea || p.areas?.totalPlotArea)
+    : (p.carpetArea || p.totalPlotArea || p.areas?.carpetArea || p.areas?.totalPlotArea);
+  if (!area) errors.push(err('area', isFarm ? 'Sold / total farm area (He-Are-Sq.M.) is required' : 'Property area is required'));
 
   const namedWitnesses = witnesses.filter((w) => w.name?.trim());
   if (namedWitnesses.length < 2) errors.push(err('witnesses', 'Two witnesses are required'));
@@ -37,14 +40,20 @@ export function validateSaleDeed(doc) {
     if (b.name && !b.pan?.trim()) errors.push(err(`buyers.${i}.pan`, `Buyer ${i + 1} PAN is required`));
   });
 
-  const isBuiltUp = p.isBuiltUp || p.permissions?.isBuiltUp || p.unitNumber || p.complexName;
-  if (isBuiltUp && !(p.unitCardNo || p.revenueRecords?.propertyCardNo || p.govRecords?.propertyCard?.cardNo)) {
-    errors.push(err('propertyCard', 'Property / Unit card number is required for built-up property'));
-  }
+  if (!isFarm) {
+    const isBuiltUp = p.isBuiltUp || p.permissions?.isBuiltUp || p.unitNumber || p.complexName;
+    if (isBuiltUp && !(p.unitCardNo || p.revenueRecords?.propertyCardNo || p.govRecords?.propertyCard?.cardNo)) {
+      errors.push(err('propertyCard', 'Property / Unit card number is required for built-up property'));
+    }
 
-  if (p.tenureType === 'new_tenure' || p.permissions?.tenureType === 'new_tenure') {
-    if (!(p.naOrderNo || p.permissions?.naOrderNo)) {
-      errors.push(err('naOrderNo', 'NA permission is required for new tenure'));
+    if (p.tenureType === 'new_tenure' || p.permissions?.tenureType === 'new_tenure') {
+      if (!(p.naOrderNo || p.permissions?.naOrderNo)) {
+        errors.push(err('naOrderNo', 'NA permission is required for new tenure'));
+      }
+    }
+  } else if (p.tenureType === 'new_tenure' || p.permissions?.tenureType === 'new_tenure') {
+    if (!(p.collectorPermissionOrderNo || p.permissions?.collectorPermissionOrderNo)) {
+      errors.push(err('collectorPermissionOrderNo', 'Collector permission is required for new tenure farm land'));
     }
   }
 

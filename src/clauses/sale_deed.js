@@ -2,7 +2,7 @@
  * Sale Deed clause pack — dynamic legal clauses (no hardcoded JSX paragraphs).
  */
 
-const SALE = ['sale_deed'];
+const SALE = ['sale_deed', 'sale_deed_flat', 'sale_deed_house', 'sale_deed_farm_land', 'sale_deed_plot'];
 
 export const saleDeedClauses = [
   {
@@ -13,7 +13,7 @@ export const saleDeedClauses = [
     condition: () => true,
     renderAs: 'preamble',
     template: {
-      gu: 'રૂા.{{SaleAmountDigits}}/- (અંકે રૂપિયા {{SaleAmountWords}}) ના સદર અવેજે આજ રોજ તારીખ-{{ExecutionDate}} માહે {{ExecutionPlace}} ના દિને જિલ્લા-{{District}}, તાલુકા-{{Taluka}}, મોજે-{{Village}} ની રે.સર્વે નં. {{SurveyNo}}, સીટી સર્વે નંબર {{CitySurveyNo}} ની બિનખેતી (NA) જમીન પર આવેલ "{{ComplexName}}" સંકુલમાં આવેલ નંબર {{UnitNo}} ની મિલકત, કાર્પેટ એરિયા {{CarpetArea}} ચો.મી., યુનીટ પ્રોપર્ટી કાર્ડ નંબર {{UnitCard}} સહિત, વેચાણ કરવામાં આવે છે.',
+      gu: 'રૂા.{{SaleAmountDigits}}/- (અંકે રૂપિયા {{SaleAmountWords}}) ના સદર અવેજે આજ રોજ તારીખ-{{ExecutionDate}} માહે {{ExecutionPlace}} ના દિને જિલ્લા-{{District}}, તાલુકા-{{Taluka}}, મોજે-{{Moje}} ની રે.સર્વે નં. {{SurveyNo}}, સીટી સર્વે નંબર {{CitySurveyNo}} ની બિનખેતી (NA) જમીન પર આવેલ "{{ComplexName}}" સંકુલમાં આવેલ નંબર {{UnitNo}} ની મિલકત, કાર્પેટ એરિયા {{CarpetArea}} ચો.મી., યુનીટ પ્રોપર્ટી કાર્ડ નંબર {{UnitCard}} સહિત, વેચાણ કરવામાં આવે છે.',
       en: 'For consideration of {{SaleAmount}} (Rupees {{SaleAmountWords}} only), the property being Unit {{UnitNo}} in "{{ComplexName}}" at Village {{Village}}, Survey No. {{SurveyNo}}, Carpet Area {{CarpetArea}} sq.m., Property Card {{UnitCard}}, is hereby sold.',
     },
   },
@@ -33,7 +33,7 @@ export const saleDeedClauses = [
     documentTypes: SALE,
     condition: () => true,
     template: {
-      gu: '૧. બ્લોક/રેવન્યુ સર્વે નંબર : {{SurveyNo}} ની સંપૂર્ણ વિગત :- જિલ્લા-{{District}}, તાલુકા-{{Taluka}}, મોજે-{{Village}} ની રે.સર્વે નં. {{SurveyNo}}, સીટી સર્વે નંબર {{CitySurveyNo}} ની બિનખેતી (NA) જમીન પર આવેલ "{{ComplexName}}" માં નંબર {{UnitNo}} ની મિલકત, કાર્પેટ એરિયા {{CarpetArea}} ચો.મી., યુનીટ કાર્ડ {{UnitCard}} સહિત વેચાણ આપવામાં આવે છે. વેચાણ આપનાર ખાતરી આપે છે કે મિલકતનો હક્ક સ્પષ્ટ, નિ:શંક અને વેચનયોગ્ય છે.',
+      gu: '૧. બ્લોક/રેવન્યુ સર્વે નંબર : {{SurveyNo}} ની સંપૂર્ણ વિગત :- જિલ્લા-{{District}}, તાલુકા-{{Taluka}}, મોજે-{{Moje}} ની રે.સર્વે નં. {{SurveyNo}}, સીટી સર્વે નંબર {{CitySurveyNo}} ની બિનખેતી (NA) જમીન પર આવેલ "{{ComplexName}}" માં નંબર {{UnitNo}} ની મિલકત, કાર્પેટ એરિયા {{CarpetArea}} ચો.મી., યુનીટ કાર્ડ {{UnitCard}} સહિત વેચાણ આપવામાં આવે છે. વેચાણ આપનાર ખાતરી આપે છે કે મિલકતનો હક્ક સ્પષ્ટ, નિ:શંક અને વેચનયોગ્ય છે.',
       en: '1. Full particulars of Survey No. {{SurveyNo}} at {{Village}}, {{District}}: Unit {{UnitNo}} in "{{ComplexName}}" with carpet area {{CarpetArea}} sq.m. The Seller warrants clear and marketable title.',
     },
   },
@@ -44,8 +44,8 @@ export const saleDeedClauses = [
     documentTypes: SALE,
     condition: (doc) => Boolean(doc.property?.totalPlotArea || doc.property?.areas?.totalPlotArea),
     template: {
-      gu: '૨. જમીનના ક્ષેત્રફળ બાબતનું સ્પષ્ટીકરણ :- મોજે {{Village}} ના રેકોર્ડમાં બ્લોક-સર્વે નંબર {{SurveyNo}} નું ક્ષેત્રફળ રેકોર્ડ મુજબ નક્કી કરવામાં આવેલ છે.',
-      en: '2. The recorded area of Survey No. {{SurveyNo}} at {{Village}} is as per revenue records.',
+      gu: '૨. જમીનના ક્ષેત્રફળ બાબતનું સ્પષ્ટીકરણ :- મોજે {{Moje}} ના રેકોર્ડમાં બ્લોક-સર્વે નંબર {{SurveyNo}} નું ક્ષેત્રફળ રેકોર્ડ મુજબ નક્કી કરવામાં આવેલ છે.',
+      en: '2. The recorded area of Survey No. {{SurveyNo}} at Moje {{Moje}} is as per revenue records.',
     },
   },
   {
@@ -166,7 +166,7 @@ export const saleDeedClauses = [
     documentTypes: SALE,
     condition: () => true,
     template: {
-      gu: 'વેચાણ આપવા નક્કી કરેલ મિલકતની વિગત :- જિલ્લા-{{District}}, તાલુકા-{{Taluka}}, મોજે-{{Village}} ની રે.સર્વે નં. {{SurveyNo}}, સીટી સર્વે નંબર {{CitySurveyNo}} પર આવેલ "{{ComplexName}}" માં નંબર {{UnitNo}} ની મિલકત, કાર્પેટ એરિયા {{CarpetArea}} ચો.મી., યુનીટ કાર્ડ {{UnitCard}}, વરાડા {{VerandaArea}} ચો.મી. સહિત.',
+      gu: 'વેચાણ આપવા નક્કી કરેલ મિલકતની વિગત :- જિલ્લા-{{District}}, તાલુકા-{{Taluka}}, મોજે-{{Moje}} ની રે.સર્વે નં. {{SurveyNo}}, સીટી સર્વે નંબર {{CitySurveyNo}} પર આવેલ "{{ComplexName}}" માં નંબર {{UnitNo}} ની મિલકત, કાર્પેટ એરિયા {{CarpetArea}} ચો.મી., યુનીટ કાર્ડ {{UnitCard}}, વરાડા {{VerandaArea}} ચો.મી. સહિત.',
       en: 'Schedule: Unit {{UnitNo}} in "{{ComplexName}}" at {{Village}}, Survey {{SurveyNo}}, Carpet {{CarpetArea}} sq.m., Card {{UnitCard}}.',
     },
   },

@@ -124,22 +124,26 @@ export default function DocumentInputSheet({ data }) {
             </td>
           </tr>
           <tr>
-            <td style={tableCell({ width: '20%', fontWeight: 'bold' })}>Village (Moje) / ગામ:</td>
+            <td style={tableCell({ width: '20%', fontWeight: 'bold' })}>Village / ગામ:</td>
             <td style={tableCell({ width: '30%' })}>{s.village || '_______________'}</td>
-            <td style={tableCell({ width: '20%', fontWeight: 'bold' })}>Block/Survey No:</td>
-            <td style={tableCell({ width: '30%' })}>{s.blockSurveyNo || '_______________'}</td>
+            <td style={tableCell({ width: '20%', fontWeight: 'bold' })}>Moje / મોજે:</td>
+            <td style={tableCell({ width: '30%' })}>{s.moje || s.village || '_______________'}</td>
           </tr>
           <tr>
+            <td style={tableCell({ fontWeight: 'bold' })}>Block/Survey No:</td>
+            <td style={tableCell()}>{s.blockSurveyNo || '_______________'}</td>
             <td style={tableCell({ fontWeight: 'bold' })}>Old Survey No:</td>
             <td style={tableCell()}>{s.oldSurveyNo || '_______________'}</td>
-            <td style={tableCell({ fontWeight: 'bold' })}>City Survey No:</td>
-            <td style={tableCell()}>{s.newCitySurveyNo || '_______________'}</td>
           </tr>
           <tr>
+            <td style={tableCell({ fontWeight: 'bold' })}>City Survey No:</td>
+            <td style={tableCell()}>{s.newCitySurveyNo || '_______________'}</td>
             <td style={tableCell({ fontWeight: 'bold' })}>TP/FP No:</td>
             <td style={tableCell()}>{s.tpFpNo || '_______________'}</td>
+          </tr>
+          <tr>
             <td style={tableCell({ fontWeight: 'bold' })}>Tenure / શરત:</td>
-            <td style={tableCell()}>{s.tenureType === 'new_tenure' ? 'New Tenure / નવી શરત' : 'Old Tenure / જૂની શરત'}</td>
+            <td style={tableCell()} colSpan="3">{s.tenureType === 'new_tenure' ? 'New Tenure / નવી શરત' : 'Old Tenure / જૂની શરત'}</td>
           </tr>
           <tr>
             <td style={tableCell({ fontWeight: 'bold' })}>Total Area (Sq.Mtr):</td>

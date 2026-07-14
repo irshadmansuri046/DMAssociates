@@ -10,8 +10,27 @@ import {
 } from '../../utils/aalekhDocumentUtils';
 import DocumentFormNo1 from '../../components/DocumentFormNo1';
 import PhotoSlotBox, { ThumbSlotBox, PASSPORT_PHOTO, STAMP_PHOTO } from '../../components/PhotoSlotBox';
-import { GOVT, pStyle, headingStyle, titleStyle, cellStyle, tableStyle, idLineStyle } from './styles';
+import {
+  DEED,
+  deedPStyle as pStyle,
+  deedPlainStyle,
+  deedHeadingStyle as headingStyle,
+  deedTitleStyle as titleStyle,
+  deedCellStyle as cellStyle,
+  deedTableStyle as tableStyle,
+  deedIdLineStyle as idLineStyle,
+} from './styles';
 import { GovPage, GovSignatureStrip } from './GovPage';
+
+const T = DEED;
+
+function DeedPage(props) {
+  return <GovPage {...props} tokens={DEED} fixedHeight />;
+}
+
+function DeedSignStrip(props) {
+  return <GovSignatureStrip {...props} tokens={DEED} />;
+}
 
 function StampPartyPhoto({ party }) {
   return (
@@ -58,7 +77,7 @@ function partyLines(party, index) {
     <div
       key={index}
       style={{
-        marginBottom: GOVT.sectionGap,
+        marginBottom: T.sectionGap,
         display: 'flex',
         gap: '12px',
         alignItems: 'flex-start',
@@ -66,7 +85,7 @@ function partyLines(party, index) {
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ ...pStyle, marginBottom: '4px' }}>
+        <p style={{ ...deedPlainStyle, marginBottom: '4px', textIndent: 0 }}>
           <strong>
             {n}. {nameLine}
           </strong>
@@ -75,7 +94,7 @@ function partyLines(party, index) {
           ) : null}
         </p>
         {partyIdLines(party)}
-        <p style={{ ...pStyle, marginLeft: '18px', marginBottom: 0 }}>
+        <p style={{ ...deedPlainStyle, marginLeft: '18px', marginBottom: 0, textIndent: 0 }}>
           રહેવાસી: {party.address || '_______________'}
         </p>
       </div>
@@ -149,15 +168,15 @@ function TitleHistorySection({ history = [] }) {
   const rows = entries.length ? entries : [{ entryNo: '', date: '', description: '' }];
 
   return (
-    <div style={{ marginTop: GOVT.sectionGap, marginBottom: GOVT.sectionGap }}>
+    <div style={{ marginTop: T.sectionGap, marginBottom: T.sectionGap }}>
       <div style={{ ...headingStyle, textDecoration: 'underline', marginBottom: '6px' }}>
         માલિકી હક્ક સાંકળ / Ownership Chain & Title History :-
       </div>
-      <p style={{ ...pStyle, fontSize: GOVT.fontSizeSmall, marginBottom: GOVT.paragraphGap }}>
+      <p style={{ ...pStyle, fontSize: T.fontSizeSmall, marginBottom: T.paragraphGap }}>
         નીચે મુજબની નોંધો / માઈલસ્ટોન્સ મુજબ મિલકતનો હક્ક સાંકળ (chain of title) સ્પષ્ટ થાય છે.
       </p>
       {rows.map((h, idx) => (
-        <div key={idx} style={{ marginBottom: GOVT.paragraphGap }}>
+        <div key={idx} style={{ marginBottom: T.paragraphGap }}>
           <p style={{ ...pStyle, fontWeight: 700, marginBottom: '4px' }}>
             {toGuDigits(idx + 1)}. નોંધ નંબર : {toGuDigits(h.entryNo || '________')}
             {'  '}તારીખ : {formatGuDate(h.date)}
@@ -196,16 +215,16 @@ export default function GovernmentSaleDeedBundle({
   const sumA = payA.reduce((a, r) => a + (parseFloat(r.amount) || 0), 0) || total;
   const sumB = payB.reduce((a, r) => a + (parseFloat(r.amount) || 0), 0);
 
-  const locationLine = `મોજે ${snap.village}, તા. ${snap.taluka}, જી. ${snap.district}`;
+  const locationLine = `મોજે ${snap.moje}, તા. ${snap.taluka}, જી. ${snap.district}`;
   const amountTitle = `જમીનનો વેચાણ દસ્તાવેજ રૂપિયા ${toGuDigits(Number(total).toLocaleString('en-IN'))}/- પુરાનો :-`;
   return (
     <div id={containerId} className="deed-govt-sale-root">
       {/* —— Page 1: Title + Sellers (narrative) —— */}
-      <GovPage pageNum={1} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={1} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         {/* Keep top blank band (no photo/thumb boxes) for stamp-paper / pasting area */}
         <div style={{ height: '175px', marginBottom: '10px' }} aria-hidden />
 
-        <p style={{ ...pStyle, textAlign: 'center', marginBottom: '4px', fontSize: GOVT.fontSizeSmall }}>
+        <p style={{ ...pStyle, textAlign: 'center', marginBottom: '4px', fontSize: T.fontSizeSmall }}>
           {locationLine}
         </p>
         <div style={{ ...titleStyle, marginBottom: '12px' }}>{amountTitle}</div>
@@ -223,10 +242,10 @@ export default function GovernmentSaleDeedBundle({
           (જેને આગળ &quot;વેચાણ આપનાર&quot; કહેવામાં આવશે, જેમાં તેના વારસદારો, કાયદેસર પ્રતિનિધિઓ, અમલદારો,
           વહીવટકર્તાઓ અને અસાઈનીઓ સામેલ છે.)
         </p>
-      </GovPage>
+      </DeedPage>
 
       {/* —— Page 2: Buyers —— */}
-      <GovPage pageNum={2} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={2} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         <div style={headingStyle}>વેચાણ લેનાર / લખી લેનાર :-</div>
         {(buyers.length ? buyers : [{}]).map((p, i) => {
           if (p.isCorporate) {
@@ -234,7 +253,7 @@ export default function GovernmentSaleDeedBundle({
               <div
                 key={i}
                 style={{
-                  marginBottom: GOVT.sectionGap,
+                  marginBottom: T.sectionGap,
                   display: 'flex',
                   gap: '12px',
                   alignItems: 'flex-start',
@@ -271,12 +290,12 @@ export default function GovernmentSaleDeedBundle({
           (જેને આગળ &quot;વેચાણ લેનાર&quot; કહેવામાં આવશે, જેમાં તેના વારસદારો, કાયદેસર પ્રતિનિધિઓ અને અસાઈનીઓ સામેલ છે.)
         </p>
         <p style={pStyle}>ની વચ્ચે નીચે મુજબ એ રીતે કરવામાં આવ્યો છે કે,</p>
-      </GovPage>
+      </DeedPage>
 
       {/* —— Page 3: Property / consideration narrative —— */}
-      <GovPage pageNum={3} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={3} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         <p style={pStyle}>
-          વેચાણ આપનાર એ વેચાણ લેનારને ખાતરી આપે છે કે જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.village} ની{' '}
+          વેચાણ આપનાર એ વેચાણ લેનારને ખાતરી આપે છે કે જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.moje} ની{' '}
           {snap.surveyLine} ની બિનખેતી (NA) જમીન પર આવેલ &quot;{snap.complexName}&quot; સંકુલમાં આવેલ નંબર {snap.unitNo} ની મિલકત,
           કાર્પેટ એરિયા {snap.carpet} ચો.મી., યુનીટ પ્રોપર્ટી કાર્ડ નંબર {snap.unitCard} સહિત, સ્પષ્ટ, નિ:શંક અને વેચનયોગ્ય હક્કથી
           વેચાણ આપવામાં આવે છે.
@@ -289,10 +308,10 @@ export default function GovernmentSaleDeedBundle({
           સ્વીકારી છે.
         </p>
         <PaymentDetailTable rows={payA.length ? payA : [{ amount: total, mode: 'કુલ અવેજ' }]} totalLabel="કુલ રકમ રૂપિયા (A)" totalAmount={sumA} />
-      </GovPage>
+      </DeedPage>
 
       {/* —— Page 4: More payments if any + title history —— */}
-      <GovPage pageNum={4} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={4} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         {payB.length > 0 && (
           <>
             <p style={pStyle}>
@@ -310,12 +329,12 @@ export default function GovernmentSaleDeedBundle({
 
         <p style={{ ...pStyle, fontWeight: 700 }}>૧. બ્લોક / રેવન્યુ સર્વે વિગત :-</p>
         <p style={pStyle}>
-          જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.village} ની {snap.surveyLine} ની મિલકત.
+          જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.moje} ની {snap.surveyLine} ની મિલકત.
           પ્લોટ ક્ષેત્રફળ {toGuDigits(s.totalPlotArea || '_______')} ચો.મી.
         </p>
         <p style={{ ...pStyle, fontWeight: 700 }}>૨. જમીનના ક્ષેત્રફળ બાબતનું સ્પષ્ટીકરણ :-</p>
         <p style={pStyle}>
-          મોજે {snap.village} ના રેકોર્ડમાં બ્લોક-સર્વે નંબર {toGuDigits(s.blockSurveyNo || '_______')} નું ક્ષેત્રફળ
+          મોજે {snap.moje} ના રેકોર્ડમાં બ્લોક-સર્વે નંબર {toGuDigits(s.blockSurveyNo || '_______')} નું ક્ષેત્રફળ
           રેકોર્ડ મુજબ નક્કી કરવામાં આવેલ છે.
         </p>
         {(s.naOrderNo || s.permissions?.naOrderNo) && (
@@ -327,10 +346,10 @@ export default function GovernmentSaleDeedBundle({
             </p>
           </>
         )}
-      </GovPage>
+      </DeedPage>
 
       {/* —— Page 5: Permissions / card / banakhat —— */}
-      <GovPage pageNum={5} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={5} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         {(s.plotValidationOrderNo || s.permissions?.plotValidationOrderNo) && (
           <>
             <p style={{ ...pStyle, fontWeight: 700 }}>૪. પ્લોટ વેલીડેશન સર્ટીફીકેટ :-</p>
@@ -366,10 +385,10 @@ export default function GovernmentSaleDeedBundle({
             <p style={pStyle}>મિલકત RERA અંતર્ગત નોંધાયેલ છે. નોંધણી નંબર: {snap.reraNumber}.</p>
           </>
         )}
-      </GovPage>
+      </DeedPage>
 
       {/* —— Page 6: Covenants —— */}
-      <GovPage pageNum={6} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={6} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         <div style={{ ...headingStyle, textAlign: 'center' }}>શરતો અને કરારો</div>
         <p style={pStyle}>
           આથી વેચાણ લેનાર પરિશિષ્ટમાં વર્ણવેલ મિલકતનો સંપૂર્ણ, સ્વતંત્ર માલિક બને છે; રહેઠાણ / વ્યવસાય માટે ઉપયોગ, ગીરો
@@ -406,7 +425,7 @@ export default function GovernmentSaleDeedBundle({
           ].filter(Boolean);
           const mid = Math.ceil(Math.max(wIds.length, 1) / 2);
           return (
-            <div key={i} style={{ marginBottom: GOVT.sectionGap }}>
+            <div key={i} style={{ marginBottom: T.sectionGap }}>
               <p style={{ ...pStyle, marginBottom: '4px' }}>
                 <strong>
                   સાક્ષી {toGuDigits(i + 1)}. {w.name || '_______________'}
@@ -432,14 +451,14 @@ export default function GovernmentSaleDeedBundle({
                   minHeight: '16px',
                 }}
               />
-              <div style={{ fontSize: GOVT.fontSizeTiny, color: '#333' }}>સાક્ષી {toGuDigits(i + 1)} ની સહી</div>
+              <div style={{ fontSize: T.fontSizeTiny, color: '#333' }}>સાક્ષી {toGuDigits(i + 1)} ની સહી</div>
             </div>
           );
         })}
-      </GovPage>
+      </DeedPage>
 
       {/* —— Page 7: Parishishta + boundaries —— */}
-      <GovPage pageNum={7} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={7} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         <div style={{ ...titleStyle, color: '#000' }}>-:: પરિશિષ્ટ ::-</div>
         <p style={pStyle}>{buildParishishtaText(data)}</p>
         <p style={pStyle}>
@@ -457,41 +476,41 @@ export default function GovernmentSaleDeedBundle({
             {dir} :- {val || '_______________'}
           </p>
         ))}
-      </GovPage>
+      </DeedPage>
 
       {/* —— Schedule 32-A party photo tables (signature pinned to avoid sparse gap) —— */}
-      <GovPage pageNum={8} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={8} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         <div style={titleStyle}>શીડ્યુલ</div>
         <p style={{ ...pStyle, textAlign: 'center', fontWeight: 700 }}>
           રજીસ્ટ્રેશન એક્ટ ૧૯૦૮ ની કલમ ૩૨-અ મુજબ શીડ્યુલ
         </p>
         <div style={{ ...headingStyle, textAlign: 'center' }}>વેચાણ આપનાર</div>
         <SchedulePartyTable parties={sellers.length ? sellers : [{}]} />
-      </GovPage>
+      </DeedPage>
 
-      <GovPage pageNum={9} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={9} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         <div style={{ ...headingStyle, textAlign: 'center' }}>વેચાણ લેનાર</div>
         <SchedulePartyTable parties={buyers.length ? buyers : [{}]} />
-      </GovPage>
+      </DeedPage>
 
       {/* —— Schedule: Witnesses (સાક્ષીઓ) —— */}
-      <GovPage pageNum={10} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={10} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         <div style={titleStyle}>શીડ્યુલ — સાક્ષીઓ</div>
-        <p style={{ ...pStyle, textAlign: 'center', fontWeight: 700, marginBottom: GOVT.sectionGap }}>
+        <p style={{ ...pStyle, textAlign: 'center', fontWeight: 700, marginBottom: T.sectionGap }}>
           રજીસ્ટ્રેશન એક્ટ ૧૯૦૮ મુજબ સાક્ષીઓની ઓળખ / ફોટો / અંગૂઠાનું નિશાન
         </p>
         <div style={{ ...headingStyle, textAlign: 'center' }}>સાક્ષીઓ (Witnesses)</div>
         <SchedulePartyTable parties={witnessList} showWitnessMeta />
-        <div style={{ marginTop: GOVT.sectionGap }}>
+        <div style={{ marginTop: T.sectionGap }}>
           <p style={pStyle}>
             અમો ઉપરોક્ત સાક્ષીઓ ખાતરી આપીએ છીએ કે વેચાણ આપનાર અને વેચાણ લેનારે આ દસ્તાવેજ અમારી હાજરીમાં સહી કર્યો છે
             અને અમોએ પણ આ દસ્તાવેજ પર સાક્ષી તરીકે સહી કરી છે.
           </p>
         </div>
-      </GovPage>
+      </DeedPage>
 
       {/* —— Annexure-A property photos (govt wording) —— */}
-      <GovPage pageNum={11} footer={<GovSignatureStrip sellers={sellers} buyers={buyers} />}>
+      <DeedPage pageNum={11} footer={<DeedSignStrip sellers={sellers} buyers={buyers} />}>
         <div style={{ ...titleStyle, textDecoration: 'none' }}>એનેક્ષર- એ</div>
         <div style={{ ...headingStyle, textAlign: 'center', marginBottom: '16px' }}>મિલકતની ઓળખ</div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
@@ -512,15 +531,18 @@ export default function GovernmentSaleDeedBundle({
         <div style={{ marginTop: '20px' }}>
           <div style={headingStyle}>સાક્ષીઓની સહી</div>
           {witnessList.map((w, i) => (
-            <p key={i} style={{ ...pStyle, marginBottom: '18px' }}>
-              સાક્ષી {toGuDigits(i + 1)} ({w.name || '_______________'}) :- ........................................................
-            </p>
+            <div key={i} style={{ marginBottom: '14px' }}>
+              <p style={{ ...deedPlainStyle, marginBottom: '2px', textIndent: 0 }}>
+                સાક્ષી {toGuDigits(i + 1)} ({w.name || '_______________'})
+              </p>
+              <div style={{ borderBottom: '1px dotted #000', width: '100%', height: '12px' }} />
+            </div>
           ))}
         </div>
-      </GovPage>
+      </DeedPage>
 
       {/* Form No.1 / Sec 32-A appendix (existing component, restyled page wrapper via class) */}
-      <DocumentFormNo1 data={data} governmentStyle />
+      <DocumentFormNo1 data={data} governmentStyle farmStyle />
     </div>
   );
 }
@@ -544,10 +566,10 @@ function SchedulePartyTable({ parties, showWitnessMeta = false }) {
               <div style={{ borderBottom: '1px dotted #000', width: '80%', margin: '0 auto 8px' }} />
               <div style={{ fontWeight: 700 }}>{p.name || '_______________'}</div>
               {p.isCorporate && p.authorisedSignatory ? (
-                <div style={{ fontSize: GOVT.fontSizeTiny }}>({p.authorisedSignatory})</div>
+                <div style={{ fontSize: T.fontSizeTiny }}>({p.authorisedSignatory})</div>
               ) : null}
               {showWitnessMeta && (
-                <div style={{ fontSize: GOVT.fontSizeTiny, marginTop: '6px', lineHeight: 1.35 }}>
+                <div style={{ fontSize: T.fontSizeTiny, marginTop: '6px', lineHeight: 1.35 }}>
                   {p.pan ? <div>PAN: {p.pan}</div> : null}
                   {p.aadhaar ? <div>Aadhaar: {p.aadhaar}</div> : null}
                   {p.address ? <div style={{ marginTop: '4px' }}>{p.address}</div> : null}

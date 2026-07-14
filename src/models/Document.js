@@ -34,6 +34,13 @@ export function createEmptyProperty() {
     taluka: '',
     subRegistrarOffice: '',
     village: '',
+    moje: '',
+    subDistrict: '',
+    khataNo: '',
+    totalAreaHeAreSqm: '',
+    soldAreaHeAreSqm: '',
+    soldDirection: '',
+    aakar: '',
     districtId: '',
     talukaId: '',
     placeId: '',
@@ -165,7 +172,7 @@ export function createEmptyDocument(overrides = {}) {
   const now = new Date().toISOString();
   return {
     id: overrides.id || `doc_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-    documentType: 'sale_deed',
+    documentType: 'sale_deed_flat',
     templateId: DEFAULT_TEMPLATE_ID,
     locale: 'gu',
     status: 'draft',
@@ -178,6 +185,7 @@ export function createEmptyDocument(overrides = {}) {
     parties: {
       sellers: [createEmptyParty('company')],
       buyers: [createEmptyParty('individual')],
+      confirmers: [],
     },
     property: createEmptyProperty(),
     titleHistory: [{ entryNo: '', date: '', description: '' }],

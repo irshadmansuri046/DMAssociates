@@ -385,7 +385,7 @@ export default function BuilderSaleDeedBundle({
 
           <p style={pStyleOpen}>
             આજ રોજ સંવંત {samvat}, સને {sane} તારીખ-{datePart} માહે {monthPart} ના દિને આ વેચાણ દસ્તાવેજ લખી આપીએ છીએ
-            કે, ડિસ્ટ્રીક્ટ-{snap.district}, સબ-ડિસ્ટ્રીક્ટ-{snap.taluka || snap.district}, મોજે- {snap.village} ના નવો
+            કે, ડિસ્ટ્રીક્ટ-{snap.district}, સબ-ડિસ્ટ્રીક્ટ-{snap.taluka || snap.district}, મોજે- {snap.moje} ના નવો
             રે.સ.નં. {blockSurvey} ની સીટી સર્વે નં. {citySurvey} ની કુલ {plotArea} ચો.મીટર જમીનની બિનખેતીની
             બહુહેતુસરની જમીન ઉપર &quot;{snap.complexName}&quot; ના નામે વ્યવસાય હેતુસરના શોપીંગ કોમ્પલેક્ષ અને રહેણાંક
             હેતુસરના મકાનોના {towerPart} {floorPart} આવેલ {unitPart} જેનો કાર્પેટ એરીયા {toGuDigits(carpetSqm)} ચો.
@@ -439,7 +439,7 @@ export default function BuilderSaleDeedBundle({
           નોંધાવીને &quot;{snap.complexName}&quot; પ્રોજેક્ટ વિકસાવેલ / બાંધેલ છે. RERA નોંધણી નંબર : {reraNo}.
         </p>
         <p style={pStyle}>
-          જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.village} ની {snap.surveyLine} ની બિનખેતી (NA)
+          જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.moje} ની {snap.surveyLine} ની બિનખેતી (NA)
           જમીન પર આવેલ પ્રોજેક્ટમાંથી પ્રમોટરે એલોટીને નીચે વર્ણવેલ {unitLabel} વેચવાનું / હસ્તાંતર કરવાનું સ્વીકાર્યું
           છે.
         </p>
@@ -482,7 +482,7 @@ export default function BuilderSaleDeedBundle({
 
         <p style={{ ...pStyle, fontWeight: 700 }}>૧. પ્રોજેક્ટ જમીન / સર્વે વિગત :-</p>
         <p style={pStyle}>
-          જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.village} ની {snap.surveyLine}. પ્લોટ ક્ષેત્રફળ{' '}
+          જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.moje} ની {snap.surveyLine}. પ્લોટ ક્ષેત્રફળ{' '}
           {toGuDigits(s.totalPlotArea || '_______')} ચો.મી.
         </p>
       </GovPage>

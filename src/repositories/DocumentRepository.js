@@ -74,7 +74,7 @@ export const DocumentRepository = {
       try {
         await savePlatformInvoice({
           payment: paymentDetails,
-          documentType: doc.documentType || 'sale_deed',
+          documentType: doc.documentType || 'sale_deed_flat',
           documentId: savedDoc.id,
         });
       } catch (err) {
@@ -97,7 +97,7 @@ export const DocumentRepository = {
     }
     return savePlatformInvoice({
       payment: paymentDetails,
-      documentType: meta.documentType || 'sale_deed',
+      documentType: meta.documentType || 'sale_deed_flat',
       documentId: meta.documentId || null,
     });
   },

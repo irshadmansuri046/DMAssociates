@@ -95,13 +95,13 @@ export default function WizardForm() {
 
       // Persist invoice details to Supabase (no PDF file stored)
       await DocumentRepository.saveInvoice(payment, {
-        documentType: formData.documentType || 'sale_deed',
+        documentType: formData.documentType || 'sale_deed_flat',
       });
 
       await generateTaxInvoicePdf({
         user: sessionUser || getSessionUser(),
         payment,
-        documentTypeLabel: getDocumentTypeLabel(formData.documentType || 'sale_deed', 'en'),
+        documentTypeLabel: getDocumentTypeLabel(formData.documentType || 'sale_deed_flat', 'en'),
         amountInclusive: PDF_DOWNLOAD_PRICE_INR,
       });
     } catch (err) {
@@ -115,7 +115,7 @@ export default function WizardForm() {
   const persistInvoiceOnPaymentSuccess = async (payment) => {
     try {
       const saved = await DocumentRepository.saveInvoice(payment, {
-        documentType: formData.documentType || 'sale_deed',
+        documentType: formData.documentType || 'sale_deed_flat',
       });
       return saved;
     } catch (err) {

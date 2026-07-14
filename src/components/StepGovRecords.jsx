@@ -2,6 +2,7 @@ import React from 'react';
 import { useDeedForm } from '../context/DeedFormContext';
 import { useLanguage } from '../context/LanguageContext';
 import { GOV_MODULES } from '../modules/gov-records';
+import { getPropertyFormVisibility } from '../constants/documentTypes';
 import { Landmark } from 'lucide-react';
 
 function getNested(obj, path) {
@@ -9,7 +10,7 @@ function getNested(obj, path) {
 }
 
 /**
- * Government records accordion — only modules with data or expanded by user.
+ * Government records accordion — modules filtered by document type.
  */
 export default function StepGovRecords() {
   const { formData, updateField } = useDeedForm();
@@ -17,6 +18,10 @@ export default function StepGovRecords() {
   const locale = language === 'gu' ? 'gu' : 'en';
   const [openId, setOpenId] = React.useState(null);
   const property = formData.property || {};
+  const vis = getPropertyFormVisibility(formData.documentType, formData.templateId);
+  const modules = vis.govModuleIds
+    ? GOV_MODULES.filter((m) => vis.govModuleIds.includes(m.id))
+    : GOV_MODULES;
 
   const setModuleField = (moduleId, field, value) => {
     const mod = GOV_MODULES.find((m) => m.id === moduleId);
@@ -43,7 +48,7 @@ export default function StepGovRecords() {
       </div>
       <p className="text-[10px] text-slate-500 m-0">{t('govRecordsHint')}</p>
       <div className="space-y-2">
-        {GOV_MODULES.map((mod) => {
+        {modules.map((mod) => {
           const data = getNested(property, mod.path) || {};
           const isOpen = openId === mod.id;
           return (

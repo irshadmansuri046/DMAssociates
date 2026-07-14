@@ -1,4 +1,4 @@
-import { getDocumentTypeLabel } from './documentTypes';
+import { getDocumentTypeLabel, isBuilderSaleDeedType, isSaleDeedType } from './documentTypes';
 
 /** Party role labels (and cover field labels) by document type */
 export const DOCUMENT_PARTY_ROLES = {
@@ -9,6 +9,46 @@ export const DOCUMENT_PARTY_ROLES = {
     coverSecond: { gu: 'લેનાર / ખરીદનાર', en: 'Buyer(s)' },
     amountLabel: { gu: 'વેચાણ / અવેજ રકમ', en: 'Sale / Consideration Amount' },
     preambleTitle: { gu: '-: વેચાણ દસ્તાવેજ :-', en: '-: Sale Deed :-' },
+    useStampReserve: true,
+    showPayment: true,
+  },
+  sale_deed_flat: {
+    first: { gu: 'વેચાણ આપનાર (પ્રથમ પક્ષ)', en: 'Seller (First Party)' },
+    second: { gu: 'વેચાણ લેનાર (બીજા પક્ષ)', en: 'Buyer (Second Party)' },
+    coverFirst: { gu: 'આપનાર / વેચનાર', en: 'Seller(s)' },
+    coverSecond: { gu: 'લેનાર / ખરીદનાર', en: 'Buyer(s)' },
+    amountLabel: { gu: 'વેચાણ / અવેજ રકમ', en: 'Sale / Consideration Amount' },
+    preambleTitle: { gu: '-: વેચાણ દસ્તાવેજ (ફ્લેટ / એપાર્ટમેન્ટ) :-', en: '-: Sale Deed (Flat / Apartment) :-' },
+    useStampReserve: true,
+    showPayment: true,
+  },
+  sale_deed_house: {
+    first: { gu: 'વેચાણ આપનાર (પ્રથમ પક્ષ)', en: 'Seller (First Party)' },
+    second: { gu: 'વેચાણ લેનાર (બીજા પક્ષ)', en: 'Buyer (Second Party)' },
+    coverFirst: { gu: 'આપનાર / વેચનાર', en: 'Seller(s)' },
+    coverSecond: { gu: 'લેનાર / ખરીદનાર', en: 'Buyer(s)' },
+    amountLabel: { gu: 'વેચાણ / અવેજ રકમ', en: 'Sale / Consideration Amount' },
+    preambleTitle: { gu: '-: વેચાણ દસ્તાવેજ (મકાન / બંગલો) :-', en: '-: Sale Deed (House / Bungalow) :-' },
+    useStampReserve: true,
+    showPayment: true,
+  },
+  sale_deed_farm_land: {
+    first: { gu: 'વેચાણ આપનાર (પ્રથમ પક્ષ)', en: 'Seller (First Party)' },
+    second: { gu: 'વેચાણ લેનાર (બીજા પક્ષ)', en: 'Buyer (Second Party)' },
+    coverFirst: { gu: 'આપનાર / વેચનાર', en: 'Seller(s)' },
+    coverSecond: { gu: 'લેનાર / ખરીદનાર', en: 'Buyer(s)' },
+    amountLabel: { gu: 'વેચાણ / અવેજ રકમ', en: 'Sale / Consideration Amount' },
+    preambleTitle: { gu: '-: વેચાણ દસ્તાવેજ (ખેતીની જમીન) :-', en: '-: Sale Deed (Farm Land) :-' },
+    useStampReserve: true,
+    showPayment: true,
+  },
+  sale_deed_plot: {
+    first: { gu: 'વેચાણ આપનાર (પ્રથમ પક્ષ)', en: 'Seller (First Party)' },
+    second: { gu: 'વેચાણ લેનાર (બીજા પક્ષ)', en: 'Buyer (Second Party)' },
+    coverFirst: { gu: 'આપનાર / વેચનાર', en: 'Seller(s)' },
+    coverSecond: { gu: 'લેનાર / ખરીદનાર', en: 'Buyer(s)' },
+    amountLabel: { gu: 'વેચાણ / અવેજ રકમ', en: 'Sale / Consideration Amount' },
+    preambleTitle: { gu: '-: વેચાણ દસ્તાવેજ (પ્લોટ) :-', en: '-: Sale Deed (Plot) :-' },
     useStampReserve: true,
     showPayment: true,
   },
@@ -115,8 +155,10 @@ export const DOCUMENT_PARTY_ROLES = {
 };
 
 export function getPartyRoles(documentType, templateId) {
-  const roles = DOCUMENT_PARTY_ROLES[documentType] || DOCUMENT_PARTY_ROLES.sale_deed;
-  if (documentType === 'sale_deed' && templateId === 'builder') {
+  const roles =
+    DOCUMENT_PARTY_ROLES[documentType] ||
+    (isSaleDeedType(documentType) ? DOCUMENT_PARTY_ROLES.sale_deed : DOCUMENT_PARTY_ROLES.sale_deed_flat);
+  if (isBuilderSaleDeedType(documentType) && templateId === 'builder') {
     return {
       ...roles,
       first: { gu: 'બિલ્ડર / પ્રમોટર (વેચાણ આપનાર)', en: 'Builder / Promoter (Seller)' },

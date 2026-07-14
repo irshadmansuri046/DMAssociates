@@ -72,7 +72,7 @@ export function DocumentHeader({ doc, pageNum, totalPages, locale = 'gu' }) {
       <div style={{ textAlign: 'center' }}>SRO: {p.subRegistrarOffice || '—'}</div>
       <div style={{ textAlign: 'right' }}>Date: {docDate}</div>
       <div style={{ gridColumn: '1 / -1', fontSize: '7pt', opacity: 0.85 }}>
-        Template: {doc.templateId || 'government'} · Type: {doc.documentType || 'sale_deed'}
+        Template: {doc.templateId || 'government'} · Type: {doc.documentType || 'sale_deed_flat'}
       </div>
     </div>
   );
@@ -124,8 +124,8 @@ export function DocumentPage({
   return (
     <div
       style={shell}
-      className={`gov-doc-page deed-engine-page template-${doc.templateId || 'government'} doctype-${doc.documentType || 'sale_deed'}${stampReserve ? ' deed-stamp-page' : ''}`}
-      data-document-type={doc.documentType || 'sale_deed'}
+      className={`gov-doc-page deed-engine-page template-${doc.templateId || 'government'} doctype-${doc.documentType || 'sale_deed_flat'}${stampReserve ? ' deed-stamp-page' : ''}`}
+      data-document-type={doc.documentType || 'sale_deed_flat'}
       data-template-id={doc.templateId || 'government'}
       data-stamp-reserve={stampReserve ? 'true' : 'false'}
     >

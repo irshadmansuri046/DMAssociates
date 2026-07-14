@@ -38,8 +38,8 @@ export default function EngineCoverPage({ doc, qrDataUrl, locale = 'gu' }) {
         ...pageShellStyle(theme),
         border: theme.coverBorder && theme.coverBorder !== 'none' ? theme.coverBorder : undefined,
       }}
-      className={`gov-doc-page deed-engine-cover template-${doc.templateId || 'government'} doctype-${doc.documentType || 'sale_deed'}`}
-      data-document-type={doc.documentType || 'sale_deed'}
+      className={`gov-doc-page deed-engine-cover template-${doc.templateId || 'government'} doctype-${doc.documentType || 'sale_deed_flat'}`}
+      data-document-type={doc.documentType || 'sale_deed_flat'}
       data-template-id={doc.templateId || 'government'}
     >
       <DiagonalWatermark />

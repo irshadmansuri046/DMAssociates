@@ -128,7 +128,7 @@ export default function EngineDocumentBundle({
       };
     }
     const converted = formDataToDocument(data || {}, {
-      documentType: data?.documentType || 'sale_deed',
+      documentType: data?.documentType || 'sale_deed_flat',
       templateId: data?.templateId || 'builder',
     });
     // Preserve uploaded photos from live formData (base64 data URLs)
@@ -164,7 +164,7 @@ export default function EngineDocumentBundle({
   const locale = doc.locale || 'gu';
   const theme = getTemplateTheme(doc.templateId);
   const roles = getPartyRoles(doc.documentType);
-  const pack = getClausePack(doc.documentType || 'sale_deed');
+  const pack = getClausePack(doc.documentType || 'sale_deed_flat');
   const clauses = renderClauses(pack, doc, locale);
   const nodes = expandClauses(clauses, doc);
   const bodyPages = chunkNodes(nodes);
@@ -177,8 +177,8 @@ export default function EngineDocumentBundle({
   return (
     <div
       id={containerId}
-      className={`gov-doc-bundle aalekh-doc-bundle deed-engine-bundle template-${doc.templateId || 'government'} doctype-${doc.documentType || 'sale_deed'}`}
-      data-document-type={doc.documentType || 'sale_deed'}
+      className={`gov-doc-bundle aalekh-doc-bundle deed-engine-bundle template-${doc.templateId || 'government'} doctype-${doc.documentType || 'sale_deed_flat'}`}
+      data-document-type={doc.documentType || 'sale_deed_flat'}
       data-template-id={doc.templateId || 'government'}
       style={{
         color: theme.colors.text,

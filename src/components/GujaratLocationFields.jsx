@@ -344,6 +344,21 @@ export default function GujaratLocationFields({ property = {}, errors = {}, upda
           )}
         </div>
       </div>
+
+      <div>
+        <label className="block text-xs font-semibold text-slate-700 mb-1">
+          {t('moje')}{' '}
+          <span className="font-normal text-slate-400 normal-case">({t('mojeOptional')})</span>
+        </label>
+        <input
+          type="text"
+          value={property.moje || ''}
+          onChange={(e) => updateField('property.moje', e.target.value)}
+          className={selectClass(false)}
+          placeholder={t('enterMojeName')}
+        />
+        <p className="text-[10px] text-slate-500 mt-1 m-0">{t('mojeHint')}</p>
+      </div>
     </div>
   );
 }

@@ -159,7 +159,7 @@ export default function DocumentDeedCore({ data }) {
         <p style={pStyle}>
           રૂા.{toGuDigits(total.toLocaleString('en-IN'))}/- (અંકે રૂપિયા {totalWords}) ના સદર અવેજે
           આજ રોજ સવંત ૨૦૮૨, સને ૨૦૨૬ તારીખ-{formatGuDate(ex.executionDate)} માહે {ex.executionPlace || snap.district} ના દિને
-          જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.village} ની {snap.surveyLine} ની
+          જિલ્લા-{snap.district}, તાલુકા-{snap.taluka}, મોજે-{snap.moje} ની {snap.surveyLine} ની
           બિનખેતી (NA) જમીન પર આવેલ &quot;{snap.complexName}&quot; સંકુલમાં
           {snap.tower ? ` "${snap.tower}" ટાવરના` : ''} {snap.floor ? `${toGuDigits(snap.floor)} ફ્લોર` : ''} પર
           આવેલ નંબર {snap.unitNo} ની મિલકત, કાર્પેટ એરિયા {snap.carpet} ચો.મી.,
@@ -191,7 +191,7 @@ export default function DocumentDeedCore({ data }) {
 
         <p style={{ ...clauseStyle, fontWeight: 'bold', marginTop: '8px' }}>૨. જમીનના ક્ષેત્રફળ બાબતનું સ્પષ્ટીકરણ :-</p>
         <p style={clauseStyle}>
-          ૨.૧. મોજે {snap.village} ના રેકોર્ડમાં બ્લોક-સર્વે નંબર {toGuDigits(s.blockSurveyNo || '_______')} નું
+          ૨.૧. મોજે {snap.moje} ના રેકોર્ડમાં બ્લોક-સર્વે નંબર {toGuDigits(s.blockSurveyNo || '_______')} નું
           ક્ષેત્રફળ {toGuDigits(s.totalPlotArea || '_______')} ચો.મી. નક્કી કરવામાં આવેલ છે.
         </p>
 

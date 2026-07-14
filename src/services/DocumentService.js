@@ -24,7 +24,7 @@ export const DocumentService = {
     const doc = formDataOrDoc.parties
       ? formDataToDocument(formDataOrDoc)
       : formDataOrDoc;
-    const pack = getClausePack(doc.documentType || 'sale_deed');
+    const pack = getClausePack(doc.documentType || 'sale_deed_flat');
     return renderClauses(pack, doc, locale);
   },
 

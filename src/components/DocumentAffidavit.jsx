@@ -1,5 +1,6 @@
 import React from 'react';
 import { DOC, formatDocDate, formatToday, pageStyle } from '../utils/documentStyles';
+import { resolveMoje } from '../utils/aalekhDocumentUtils';
 
 export default function DocumentAffidavit({ data }) {
   const sellers = data.parties?.sellers || [];
@@ -7,6 +8,7 @@ export default function DocumentAffidavit({ data }) {
   const s = data.property || {};
   const t = data.transaction || {};
   const ex = data.execution || {};
+  const moje = resolveMoje(s) || '_______';
 
   return (
     <div style={pageStyle({ pageBreakAfter: 'auto' })} className="gov-doc-page">
@@ -24,10 +26,10 @@ export default function DocumentAffidavit({ data }) {
       {/* Deponents Preamble */}
       <div className="space-y-1.5 text-justify" style={{ fontSize: '10.5px' }}>
         <p style={{ margin: 0 }}>
-          We, the deponents, do hereby solemnly declare and state on oath under Section 28 of the Gujarat Stamp Act, 1958, that the details of the schedule property bearing Survey/Block No: <span style={{ fontWeight: 'bold' }}>{s.blockSurveyNo || '_______'}</span> situated at Village: <span style={{ fontWeight: 'bold' }}>{s.village || '_______'}</span>, Taluka: <span style={{ fontWeight: 'bold' }}>{s.taluka || '_______'}</span>, District: <span style={{ fontWeight: 'bold' }}>{s.district || '_______'}</span> and SRO jurisdiction of <span style={{ fontWeight: 'bold' }}>{s.subRegistrarOffice || '_______'}</span> are true and correct.
+          We, the deponents, do hereby solemnly declare and state on oath under Section 28 of the Gujarat Stamp Act, 1958, that the details of the schedule property bearing Survey/Block No: <span style={{ fontWeight: 'bold' }}>{s.blockSurveyNo || '_______'}</span> situated at Moje: <span style={{ fontWeight: 'bold' }}>{moje}</span>, Village: <span style={{ fontWeight: 'bold' }}>{s.village || '_______'}</span>, Taluka: <span style={{ fontWeight: 'bold' }}>{s.taluka || '_______'}</span>, District: <span style={{ fontWeight: 'bold' }}>{s.district || '_______'}</span> and SRO jurisdiction of <span style={{ fontWeight: 'bold' }}>{s.subRegistrarOffice || '_______'}</span> are true and correct.
         </p>
         <p style={{ margin: 0, color: '#475569', fontStyle: 'italic' }}>
-          અમો સોગંદનામું કરનાર આથી ગુજરાત સ્ટેમ્પ અધિનિયમ ૧૯૫૮ની કલમ-૨૮ અન્વયે ગંભીરતાપૂર્વક પ્રતિજ્ઞાપૂર્વક જાહેર કરીએ છીએ કે સદરહું મિલકત બ્લોક/સર્વે નંબર: {s.blockSurveyNo || '_______'}, મોજે: {s.village || '_______'}, તાલુકો: {s.taluka || '_______'}, જિલ્લો: {s.district || '_______'} અને સબ-રજીસ્ટ્રારશ્રી {s.subRegistrarOffice || '_______'} ના કાર્યક્ષેત્રમાં આવેલી મિલકતની વિગતો સાચી અને ખરી છે.
+          અમો સોગંદનામું કરનાર આથી ગુજરાત સ્ટેમ્પ અધિનિયમ ૧૯૫૮ની કલમ-૨૮ અન્વયે ગંભીરતાપૂર્વક પ્રતિજ્ઞાપૂર્વક જાહેર કરીએ છીએ કે સદરહું મિલકત બ્લોક/સર્વે નંબર: {s.blockSurveyNo || '_______'}, મોજે: {moje}, ગામ: {s.village || '_______'}, તાલુકો: {s.taluka || '_______'}, જિલ્લો: {s.district || '_______'} અને સબ-રજીસ્ટ્રારશ્રી {s.subRegistrarOffice || '_______'} ના કાર્યક્ષેત્રમાં આવેલી મિલકતની વિગતો સાચી અને ખરી છે.
         </p>
       </div>
 

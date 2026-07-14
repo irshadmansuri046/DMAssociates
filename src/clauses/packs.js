@@ -12,7 +12,7 @@ export function baseTransferClauses(documentTypes, opts = {}) {
       condition: always,
       renderAs: 'preamble',
       template: {
-        gu: opts.preambleGu || `આ દસ્તાવેજ દ્વારા "{{ComplexName}}" / મોજે {{Village}} સર્વે નં. {{SurveyNo}} ની મિલકતનું ${verb} કરવામાં આવે છે.`,
+        gu: opts.preambleGu || `આ દસ્તાવેજ દ્વારા "{{ComplexName}}" / મોજે {{Moje}} સર્વે નં. {{SurveyNo}} ની મિલકતનું ${verb} કરવામાં આવે છે.`,
         en: opts.preambleEn || `This deed effects transfer of property at {{Village}}, Survey {{SurveyNo}}, "{{ComplexName}}".`,
       },
     },
@@ -32,7 +32,7 @@ export function baseTransferClauses(documentTypes, opts = {}) {
       documentTypes,
       condition: always,
       template: {
-        gu: 'મિલકત: જિલ્લા-{{District}}, મોજે-{{Village}}, સર્વે {{SurveyNo}}, યુનિટ {{UnitNo}}, કાર્પેટ {{CarpetArea}} ચો.મી., કાર્ડ {{UnitCard}}.',
+        gu: 'મિલકત: જિલ્લા-{{District}}, મોજે-{{Moje}}, સર્વે {{SurveyNo}}, યુનિટ {{UnitNo}}, કાર્પેટ {{CarpetArea}} ચો.મી., કાર્ડ {{UnitCard}}.',
         en: 'Property at {{Village}}, Survey {{SurveyNo}}, Unit {{UnitNo}}, Carpet {{CarpetArea}} sq.m., Card {{UnitCard}}.',
       },
     },
@@ -87,7 +87,7 @@ export function baseTransferClauses(documentTypes, opts = {}) {
 
 export const giftDeedClauses = [
   ...baseTransferClauses(['gift_deed'], {
-    preambleGu: 'વેચાણ અવેજ વગર, પ્રેમ અને સ્નેહથી "{{ComplexName}}" / મોજે {{Village}} સર્વે {{SurveyNo}} ની મિલકત ભેટ રૂપે હસ્તાંતરિત કરવામાં આવે છે.',
+    preambleGu: 'વેચાણ અવેજ વગર, પ્રેમ અને સ્નેહથી "{{ComplexName}}" / મોજે {{Moje}} સર્વે {{SurveyNo}} ની મિલકત ભેટ રૂપે હસ્તાંતરિત કરવામાં આવે છે.',
     preambleEn: 'The Donor gifts absolute ownership of the scheduled property at {{Village}} without monetary consideration.',
   }),
   {
@@ -163,7 +163,7 @@ export const willClauses = [
     condition: always,
     renderAs: 'preamble',
     template: {
-      gu: 'હું, ટેસ્ટેટર, મારી મિલકત "{{ComplexName}}" / મોજે {{Village}} અંગે આ વસિયતનામું કરું છું.',
+      gu: 'હું, ટેસ્ટેટર, મારી મિલકત "{{ComplexName}}" / મોજે {{Moje}} અંગે આ વસિયતનામું કરું છું.',
       en: 'I, the Testator, hereby make this Will concerning property at {{Village}}.',
     },
   },

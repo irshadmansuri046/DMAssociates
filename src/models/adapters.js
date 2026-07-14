@@ -81,7 +81,8 @@ function syncPropertyFlat(property) {
   gov.propertyCard.cardNo = unit.unitCardNo || rev.propertyCardNo || gov.propertyCard.cardNo;
   gov.extract712.number = rev.extract712No || gov.extract712.number;
   gov.extract712.date = rev.extract712Date || gov.extract712.date;
-  gov.form8A.khataNo = rev.khata8ANo || gov.form8A.khataNo;
+  gov.form8A.khataNo = p.khataNo || rev.khata8ANo || gov.form8A.khataNo;
+  if (p.khataNo && !rev.khata8ANo) rev.khata8ANo = p.khataNo;
   gov.mutation.entryNo = rev.mutationEntryNo || gov.mutation.entryNo;
   gov.mutation.date = rev.mutationDate || gov.mutation.date;
   gov.encumbrance.certNo = rev.encumbranceCertNo || gov.encumbrance.certNo;
@@ -156,7 +157,7 @@ export function formDataToDocument(formData = {}, meta = {}) {
   return {
     ...doc,
     ...meta,
-    documentType: formData.documentType || meta.documentType || 'sale_deed',
+    documentType: formData.documentType || meta.documentType || 'sale_deed_flat',
     templateId: formData.templateId || meta.templateId || DEFAULT_TEMPLATE_ID,
     locale: formData.locale || meta.locale || 'gu',
     documentNumber: formData.execution?.documentSerialNo || formData.documentNumber || '',
@@ -164,6 +165,7 @@ export function formDataToDocument(formData = {}, meta = {}) {
     parties: {
       sellers: (formData.parties?.sellers || []).map(partyFromLegacy),
       buyers: (formData.parties?.buyers || []).map(partyFromLegacy),
+      confirmers: (formData.parties?.confirmers || []).map(partyFromLegacy),
     },
     property: syncPropertyFlat(formData.property || {}),
     titleHistory: formData.titleHistory || doc.titleHistory,
@@ -182,12 +184,13 @@ export function formDataToDocument(formData = {}, meta = {}) {
 export function documentToFormData(doc) {
   const property = syncPropertyFlat(doc.property || {});
   return {
-    documentType: doc.documentType || 'sale_deed',
+    documentType: doc.documentType || 'sale_deed_flat',
     templateId: doc.templateId || DEFAULT_TEMPLATE_ID,
     locale: doc.locale || 'gu',
     parties: {
       sellers: (doc.parties?.sellers || []).map(partyFromLegacy),
       buyers: (doc.parties?.buyers || []).map(partyFromLegacy),
+      confirmers: (doc.parties?.confirmers || []).map(partyFromLegacy),
     },
     property,
     titleHistory: doc.titleHistory || [],
@@ -212,10 +215,11 @@ export function buildParagraphContext(doc, helpers = {}) {
 
   return {
     DocumentNumber: doc.documentNumber || doc.execution?.documentSerialNo || '.....................',
-    DocumentType: doc.documentType || 'sale_deed',
+    DocumentType: doc.documentType || 'sale_deed_flat',
     DocumentDate: formatGuDate(doc.registrationDate || doc.execution?.executionDate),
     PropertyName: p.complexName || p.siteName || p.village || '_______________',
     Village: p.village || '_______________',
+    Moje: (p.moje || '').trim() || p.village || '_______________',
     District: p.district || '_______________',
     Taluka: p.taluka || p.district || '_______________',
     SurveyNo: p.blockSurveyNo || '_______________',

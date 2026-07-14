@@ -137,7 +137,7 @@ export async function generatePlatformPDF({
 
   const safeName = (villageName || 'Draft').replace(/[^a-zA-Z0-9\u0A80-\u0AFF_-]/g, '_');
   const dateStr = new Date().toISOString().slice(0, 10);
-  const typeLabel = getDocumentTypeLabel(docMeta.documentType || 'sale_deed', 'en').replace(/\s+/g, '_');
+  const typeLabel = getDocumentTypeLabel(docMeta.documentType || 'sale_deed_flat', 'en').replace(/\s+/g, '_');
   const filename = `${typeLabel}_${safeName}_${dateStr}.pdf`;
 
   const contentWidthMm = A4.widthMm - MARGIN_MM * 2;
@@ -153,10 +153,10 @@ export async function generatePlatformPDF({
     });
 
     pdf.setProperties({
-      title: getDocumentTypeLabel(docMeta.documentType || 'sale_deed', 'en'),
+      title: getDocumentTypeLabel(docMeta.documentType || 'sale_deed_flat', 'en'),
       subject: 'Property Registration — Gujarat',
       author: APP_AUTHOR,
-      keywords: `${getDocumentTypeLabel(docMeta.documentType || 'sale_deed', 'en')}, Gujarat, Property, Registration, ${docMeta.templateId || 'government'}, ${APP_NAME}, ${SOFTWARE_VERSION}`,
+      keywords: `${getDocumentTypeLabel(docMeta.documentType || 'sale_deed_flat', 'en')}, Gujarat, Property, Registration, ${docMeta.templateId || 'government'}, ${APP_NAME}, ${SOFTWARE_VERSION}`,
       creator: `${APP_NAME} v${SOFTWARE_VERSION}`,
     });
 
@@ -180,7 +180,7 @@ export async function generatePlatformPDF({
 
 /** Back-compat wrapper used by WizardForm */
 export const generateDeedPDF = async (elementId, villageName = 'Draft') => {
-  return generatePlatformPDF({ elementId, villageName, document: { documentType: 'sale_deed' } });
+  return generatePlatformPDF({ elementId, villageName, document: { documentType: 'sale_deed_flat' } });
 };
 
 export default generatePlatformPDF;

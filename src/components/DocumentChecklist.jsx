@@ -53,6 +53,12 @@ export default function DocumentChecklist({ data }) {
             <td style={tableCell()}>{s.village || '_______'}</td>
           </tr>
           <tr>
+            <td style={tableCell({ fontWeight: 'bold' })}>Moje / Mouza:</td>
+            <td style={tableCell()}>{s.moje || s.village || '_______'}</td>
+            <td style={tableCell({ fontWeight: 'bold' })}>Taluka:</td>
+            <td style={tableCell()}>{s.taluka || '_______'}</td>
+          </tr>
+          <tr>
             <td style={tableCell({ fontWeight: 'bold' })}>Stamp Duty Ref:</td>
             <td style={tableCell()}>{t.stampDutyReceiptNo || '_______'}</td>
             <td style={tableCell({ fontWeight: 'bold' })}>Checklist Date:</td>

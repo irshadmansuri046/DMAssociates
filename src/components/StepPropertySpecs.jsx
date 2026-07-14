@@ -2,6 +2,7 @@ import React from 'react';
 import { useDeedForm } from '../context/DeedFormContext';
 import { useLanguage } from '../context/LanguageContext';
 import { PROPERTY_TYPES } from '../utils/sroRequirements';
+import { getPropertyFormVisibility } from '../constants/documentTypes';
 import PhotoUploadField from './PhotoUploadField';
 import GujaratLocationFields from './GujaratLocationFields';
 import { MapPin, Compass, Building, ShieldAlert, FileText, Camera } from 'lucide-react';
@@ -10,42 +11,67 @@ export default function StepPropertySpecs({ errors = {} }) {
   const { formData, updateField } = useDeedForm();
   const { t, language } = useLanguage();
   const locale = language === 'gu' ? 'gu' : 'en';
+  const vis = getPropertyFormVisibility(formData.documentType, formData.templateId);
 
   const p = formData.property || {};
   const b = p.boundaries || {};
   const rev = p.revenueRecords || {};
   const photos = p.photos || {};
 
+  const propertyTypeOptions = vis.propertyTypeOptions
+    ? PROPERTY_TYPES.filter((pt) => vis.propertyTypeOptions.includes(pt.id))
+    : PROPERTY_TYPES;
+
+  React.useEffect(() => {
+    if (vis.lockPropertyType && p.propertyType !== vis.lockPropertyType) {
+      updateField('property.propertyType', vis.lockPropertyType);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync when document type locks classification
+  }, [formData.documentType, vis.lockPropertyType]);
+
   return (
     <div className="space-y-8 p-6">
-      {/* 0. Property Type — SRO classification */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-          <Building size={18} className="text-emerald-700" />
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
-            {t('propertyClassification')}
-          </h3>
+      {vis.showPropertyTypeSelect ? (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <Building size={18} className="text-emerald-700" />
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
+              {t('propertyClassification')}
+            </h3>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              {t('natureOfProperty')} <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={p.propertyType || propertyTypeOptions[0]?.id || 'na_land'}
+              onChange={(e) => updateField('property.propertyType', e.target.value)}
+              className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:border-emerald-600 ${
+                errors.propertyType ? 'border-red-300' : 'border-slate-250'
+              }`}
+            >
+              {propertyTypeOptions.map((pt) => (
+                <option key={pt.id} value={pt.id}>{pt.label[locale] || pt.label.en}</option>
+              ))}
+            </select>
+            {errors.propertyType && <p className="text-[10px] text-red-600 mt-1">{errors.propertyType}</p>}
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            {t('natureOfProperty')} <span className="text-red-500">*</span>
-          </label>
-          <select
-            value={p.propertyType || 'na_land'}
-            onChange={(e) => updateField('property.propertyType', e.target.value)}
-            className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:border-emerald-600 ${
-              errors.propertyType ? 'border-red-300' : 'border-slate-250'
-            }`}
-          >
-            {PROPERTY_TYPES.map((pt) => (
-              <option key={pt.id} value={pt.id}>{pt.label[locale] || pt.label.en}</option>
-            ))}
-          </select>
-          {errors.propertyType && <p className="text-[10px] text-red-600 mt-1">{errors.propertyType}</p>}
+      ) : (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <Building size={18} className="text-emerald-700" />
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
+              {t('propertyClassification')}
+            </h3>
+          </div>
+          <p className="text-sm text-slate-700 m-0">
+            {PROPERTY_TYPES.find((pt) => pt.id === (vis.lockPropertyType || p.propertyType))?.label[locale]
+              || PROPERTY_TYPES.find((pt) => pt.id === 'agricultural')?.label[locale]}
+          </p>
         </div>
-      </div>
+      )}
 
-      {/* 1. Administrative Location Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <MapPin size={18} className="text-emerald-700" />
@@ -53,11 +79,88 @@ export default function StepPropertySpecs({ errors = {} }) {
             {t('propertyLocation')}
           </h3>
         </div>
-
         <GujaratLocationFields property={p} errors={errors} updateField={updateField} />
       </div>
 
-      {/* 2. Survey Codes & Metrics */}
+      {vis.showFarmLandDetails && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <FileText size={18} className="text-emerald-700" />
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider m-0">
+              {t('farmLandDetails')}
+            </h3>
+          </div>
+          <p className="text-[10px] text-slate-500 m-0">{t('farmLandDetailsHint')}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('khataNo')}</label>
+              <input
+                type="text"
+                value={p.khataNo || rev.khata8ANo || ''}
+                onChange={(e) => {
+                  updateField('property.khataNo', e.target.value);
+                  updateField('property.revenueRecords.khata8ANo', e.target.value);
+                }}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                placeholder="e.g. 621"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('subDistrict')}</label>
+              <input
+                type="text"
+                value={p.subDistrict || ''}
+                onChange={(e) => updateField('property.subDistrict', e.target.value)}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                placeholder={p.taluka || 'Sub-District'}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('aakar')}</label>
+              <input
+                type="text"
+                value={p.aakar || ''}
+                onChange={(e) => updateField('property.aakar', e.target.value)}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                placeholder="e.g. 7.85"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('totalAreaHeAreSqm')}</label>
+              <input
+                type="text"
+                value={p.totalAreaHeAreSqm || ''}
+                onChange={(e) => updateField('property.totalAreaHeAreSqm', e.target.value)}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                placeholder="e.g. 1-86-73"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('soldAreaHeAreSqm')}</label>
+              <input
+                type="text"
+                value={p.soldAreaHeAreSqm || ''}
+                onChange={(e) => updateField('property.soldAreaHeAreSqm', e.target.value)}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                placeholder="e.g. 0-37-73"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('soldDirection')}</label>
+              <input
+                type="text"
+                value={p.soldDirection || ''}
+                onChange={(e) => updateField('property.soldDirection', e.target.value)}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                placeholder={locale === 'gu' ? 'દા.ત. પશ્ચિમ' : 'e.g. West / પશ્ચિમ'}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="space-y-4">
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <Building size={18} className="text-emerald-700" />
@@ -67,7 +170,6 @@ export default function StepPropertySpecs({ errors = {} }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* New Block/Survey */}
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               {t('blockNo')} <span className="text-red-500">*</span>
@@ -83,12 +185,8 @@ export default function StepPropertySpecs({ errors = {} }) {
             />
             {errors.blockSurveyNo && <p className="text-[10px] text-red-655 mt-1">{errors.blockSurveyNo}</p>}
           </div>
-
-          {/* Old Survey */}
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {t('oldSurveyDetails')}
-            </label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('oldSurveyDetails')}</label>
             <input
               type="text"
               value={p.oldSurveyNo || ''}
@@ -99,55 +197,49 @@ export default function StepPropertySpecs({ errors = {} }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* City Survey Number */}
-          <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {t('citySurveyNo')}
-            </label>
-            <input
-              type="text"
-              value={p.newCitySurveyNo || ''}
-              onChange={(e) => updateField('property.newCitySurveyNo', e.target.value)}
-              className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
-              placeholder="e.g. CS-4829"
-            />
+        {vis.showCitySurveyTpFp && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="md:col-span-2">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('citySurveyNo')}</label>
+              <input
+                type="text"
+                value={p.newCitySurveyNo || ''}
+                onChange={(e) => updateField('property.newCitySurveyNo', e.target.value)}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                placeholder="e.g. CS-4829"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('tpFpNo')}</label>
+              <input
+                type="text"
+                value={p.tpFpNo || ''}
+                onChange={(e) => updateField('property.tpFpNo', e.target.value)}
+                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                placeholder="e.g. TP-3, FP-24"
+              />
+            </div>
           </div>
+        )}
 
-          {/* TP/FP Number */}
-          <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {t('tpFpNo')}
-            </label>
-            <input
-              type="text"
-              value={p.tpFpNo || ''}
-              onChange={(e) => updateField('property.tpFpNo', e.target.value)}
-              className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
-              placeholder="e.g. TP-3, FP-24"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Total Land Area */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {t('landAreaSqm')} <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="number"
-              value={p.totalPlotArea || ''}
-              onChange={(e) => updateField('property.totalPlotArea', e.target.value)}
-              className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
-                errors.totalPlotArea ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
-              }`}
-              placeholder="Land Area"
-            />
-            {errors.totalPlotArea && <p className="text-[10px] text-red-655 mt-1">{errors.totalPlotArea}</p>}
-          </div>
-
-          {/* Jantri Consideration Value */}
+        <div className={`grid grid-cols-1 gap-4 ${vis.showSqmLandArea ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
+          {vis.showSqmLandArea && (
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                {t('landAreaSqm')} <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                value={p.totalPlotArea || ''}
+                onChange={(e) => updateField('property.totalPlotArea', e.target.value)}
+                className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
+                  errors.totalPlotArea ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
+                }`}
+                placeholder="Land Area"
+              />
+              {errors.totalPlotArea && <p className="text-[10px] text-red-655 mt-1">{errors.totalPlotArea}</p>}
+            </div>
+          )}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               {t('jantriValue')} <span className="text-red-500">*</span>
@@ -163,12 +255,8 @@ export default function StepPropertySpecs({ errors = {} }) {
             />
             {errors.jantriValue && <p className="text-[10px] text-red-655 mt-1">{errors.jantriValue}</p>}
           </div>
-
-          {/* Land Tenure Select */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              {t('tenureType')}
-            </label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('tenureType')}</label>
             <select
               value={p.tenureType || 'old_tenure'}
               onChange={(e) => updateField('property.tenureType', e.target.value)}
@@ -180,7 +268,6 @@ export default function StepPropertySpecs({ errors = {} }) {
           </div>
         </div>
 
-        {/* Collector Permission (Visible only for New Tenure) */}
         {p.tenureType === 'new_tenure' && (
           <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-4">
             <div className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
@@ -221,146 +308,145 @@ export default function StepPropertySpecs({ errors = {} }) {
           </div>
         )}
 
-        {/* Project / unit details — always shown for deed PDF */}
-        <div className="space-y-4 pt-2 border-t border-slate-100">
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide m-0">{t('projectUnitDetails')}</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('unitType')}</label>
-              <select
-                value={p.unitType || 'flat'}
-                onChange={(e) => updateField('property.unitType', e.target.value)}
-                className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
-              >
-                <option value="flat">{t('flatApartment')}</option>
-                <option value="row_house">{t('rowHouse')}</option>
-                <option value="house">{t('independentHouse')}</option>
-              </select>
+        {vis.showProjectUnitDetails && (
+          <div className="space-y-4 pt-2 border-t border-slate-100">
+            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide m-0">{t('projectUnitDetails')}</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('unitType')}</label>
+                <select
+                  value={p.unitType || (vis.houseUnitOptions ? 'house' : 'flat')}
+                  onChange={(e) => updateField('property.unitType', e.target.value)}
+                  className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                >
+                  {!vis.houseUnitOptions && <option value="flat">{t('flatApartment')}</option>}
+                  <option value="row_house">{t('rowHouse')}</option>
+                  <option value="house">{t('independentHouse')}</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('complexSiteName')}</label>
+                <input type="text" value={p.complexName || ''} onChange={(e) => updateField('property.complexName', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="e.g. Shrinath Complex" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('towerBuilding')}</label>
+                <input type="text" value={p.tower || ''} onChange={(e) => updateField('property.tower', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="e.g. Tower A" />
+              </div>
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('complexSiteName')}</label>
-              <input type="text" value={p.complexName || ''} onChange={(e) => updateField('property.complexName', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="e.g. Shrinath Complex" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('floorUnitNo')}</label>
+                <div className="flex gap-2">
+                  <input type="text" value={p.floor || ''} onChange={(e) => updateField('property.floor', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder={t('floorPlaceholder')} />
+                  <input type="text" value={p.unitNumber || ''} onChange={(e) => updateField('property.unitNumber', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder={t('unitPlaceholder')} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('unitCardNo')}</label>
+                <input type="text" value={p.unitCardNo || ''} onChange={(e) => updateField('property.unitCardNo', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="A/01/02/202" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">{t('verandaShareArea')}</label>
+                <input type="number" value={p.verandaArea || ''} onChange={(e) => updateField('property.verandaArea', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="135.00" />
+              </div>
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('towerBuilding')}</label>
-              <input type="text" value={p.tower || ''} onChange={(e) => updateField('property.tower', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="e.g. Tower A" />
-            </div>
+            {vis.showReraParking && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">{t('reraRegNo')}</label>
+                  <input type="text" value={p.reraNumber || ''} onChange={(e) => updateField('property.reraNumber', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="PR/GJ/..." />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">{t('parkingTypeSlots')}</label>
+                  <div className="flex gap-2">
+                    <input type="text" value={p.parkingType || ''} onChange={(e) => updateField('property.parkingType', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="Covered" />
+                    <input type="text" value={p.parkingSlots || ''} onChange={(e) => updateField('property.parkingSlots', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="Slot no." />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">{t('parkingArea')}</label>
+                  <input type="text" value={p.parkingArea || ''} onChange={(e) => updateField('property.parkingArea', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="12.5" />
+                </div>
+              </div>
+            )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('floorUnitNo')}</label>
-              <div className="flex gap-2">
-                <input type="text" value={p.floor || ''} onChange={(e) => updateField('property.floor', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder={t('floorPlaceholder')} />
-                <input type="text" value={p.unitNumber || ''} onChange={(e) => updateField('property.unitNumber', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder={t('unitPlaceholder')} />
+        )}
+
+        {vis.showBuiltUpNa && (
+          <div className="space-y-4 pt-2">
+            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+              <input
+                type="checkbox"
+                checked={p.isBuiltUp || false}
+                onChange={(e) => updateField('property.isBuiltUp', e.target.checked)}
+                className="w-4 h-4 text-emerald-800 border-slate-300 rounded focus:ring-emerald-500 cursor-pointer"
+              />
+              <span>{t('isPropertyBuiltUp')}</span>
+            </label>
+
+            {p.isBuiltUp && (
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
+                {vis.showCarpetConstruction && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">{t('constructionAreaSqm')}</label>
+                      <input
+                        type="number"
+                        value={p.constructionArea || ''}
+                        onChange={(e) => updateField('property.constructionArea', e.target.value)}
+                        className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                        placeholder="Construction Area"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">{t('carpetAreaSqm')}</label>
+                      <input
+                        type="number"
+                        value={p.carpetArea || ''}
+                        onChange={(e) => updateField('property.carpetArea', e.target.value)}
+                        className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
+                        placeholder="Carpet Area"
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      {t('naOrderNoLabel')} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={p.naOrderNo || ''}
+                      onChange={(e) => updateField('property.naOrderNo', e.target.value)}
+                      className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
+                        errors.naOrderNo ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
+                      }`}
+                      placeholder="e.g. NA/LAND/ORDER/4910/2026"
+                    />
+                    {errors.naOrderNo && <p className="text-[10px] text-red-655 mt-1">{errors.naOrderNo}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      {t('naOrderDateLabel')} <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={p.naOrderDate || ''}
+                      onChange={(e) => updateField('property.naOrderDate', e.target.value)}
+                      className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
+                        errors.naOrderDate ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
+                      }`}
+                    />
+                    {errors.naOrderDate && <p className="text-[10px] text-red-655 mt-1">{errors.naOrderDate}</p>}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('unitCardNo')}</label>
-              <input type="text" value={p.unitCardNo || ''} onChange={(e) => updateField('property.unitCardNo', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="A/01/02/202" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('verandaShareArea')}</label>
-              <input type="number" value={p.verandaArea || ''} onChange={(e) => updateField('property.verandaArea', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="135.00" />
-            </div>
+            )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('reraRegNo')}</label>
-              <input type="text" value={p.reraNumber || ''} onChange={(e) => updateField('property.reraNumber', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="PR/GJ/..." />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('parkingTypeSlots')}</label>
-              <div className="flex gap-2">
-                <input type="text" value={p.parkingType || ''} onChange={(e) => updateField('property.parkingType', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="Covered" />
-                <input type="text" value={p.parkingSlots || ''} onChange={(e) => updateField('property.parkingSlots', e.target.value)} className="w-1/2 text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="Slot no." />
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('parkingArea')}</label>
-              <input type="text" value={p.parkingArea || ''} onChange={(e) => updateField('property.parkingArea', e.target.value)} className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600" placeholder="12.5" />
-            </div>
-          </div>
-        </div>
-
-        {/* Built-up & NA checks */}
-        <div className="space-y-4 pt-2">
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-            <input
-              type="checkbox"
-              checked={p.isBuiltUp || false}
-              onChange={(e) => updateField('property.isBuiltUp', e.target.checked)}
-              className="w-4 h-4 text-emerald-800 border-slate-300 rounded focus:ring-emerald-500 cursor-pointer"
-            />
-            <span>{t('isPropertyBuiltUp')}</span>
-          </label>
-
-          {(p.isBuiltUp) && (
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    {t('constructionAreaSqm')}
-                  </label>
-                  <input
-                    type="number"
-                    value={p.constructionArea || ''}
-                    onChange={(e) => updateField('property.constructionArea', e.target.value)}
-                    className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
-                    placeholder="Construction Area"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    {t('carpetAreaSqm')}
-                  </label>
-                  <input
-                    type="number"
-                    value={p.carpetArea || ''}
-                    onChange={(e) => updateField('property.carpetArea', e.target.value)}
-                    className="w-full text-sm px-3.5 py-2 rounded-lg border border-slate-250 bg-white focus:outline-none focus:border-emerald-600"
-                    placeholder="Carpet Area"
-                  />
-                </div>
-              </div>
-
-              {/* NA Conversion Order Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    {t('naOrderNoLabel')} <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={p.naOrderNo || ''}
-                    onChange={(e) => updateField('property.naOrderNo', e.target.value)}
-                    className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
-                      errors.naOrderNo ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
-                    }`}
-                    placeholder="e.g. NA/LAND/ORDER/4910/2026"
-                  />
-                  {errors.naOrderNo && <p className="text-[10px] text-red-655 mt-1">{errors.naOrderNo}</p>}
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    {t('naOrderDateLabel')} <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={p.naOrderDate || ''}
-                    onChange={(e) => updateField('property.naOrderDate', e.target.value)}
-                    className={`w-full text-sm px-3.5 py-2 rounded-lg border bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-150 ${
-                      errors.naOrderDate ? 'border-red-300 focus:border-red-500' : 'border-slate-250 focus:border-emerald-600'
-                    }`}
-                  />
-                  {errors.naOrderDate && <p className="text-[10px] text-red-655 mt-1">{errors.naOrderDate}</p>}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
-      {/* 3. Revenue Records — 7/12, 8-A, Mutation (SRO Mandatory) */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <FileText size={18} className="text-emerald-700" />
@@ -385,7 +471,10 @@ export default function StepPropertySpecs({ errors = {} }) {
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">{t('khata8ANo')}</label>
-            <input type="text" value={rev.khata8ANo || ''} onChange={(e) => updateField('property.revenueRecords.khata8ANo', e.target.value)}
+            <input type="text" value={rev.khata8ANo || p.khataNo || ''} onChange={(e) => {
+              updateField('property.revenueRecords.khata8ANo', e.target.value);
+              if (vis.showFarmLandDetails) updateField('property.khataNo', e.target.value);
+            }}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" placeholder="8A/KH/4829/2026" />
           </div>
           <div>
@@ -398,11 +487,13 @@ export default function StepPropertySpecs({ errors = {} }) {
             <input type="date" value={rev.mutationDate || ''} onChange={(e) => updateField('property.revenueRecords.mutationDate', e.target.value)}
               className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" />
           </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">{t('propertyCardNo')}</label>
-            <input type="text" value={rev.propertyCardNo || ''} onChange={(e) => updateField('property.revenueRecords.propertyCardNo', e.target.value)}
-              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" placeholder="PC/JTP/305/2026" />
-          </div>
+          {!vis.showFarmLandDetails && (
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">{t('propertyCardNo')}</label>
+              <input type="text" value={rev.propertyCardNo || ''} onChange={(e) => updateField('property.revenueRecords.propertyCardNo', e.target.value)}
+                className="w-full text-sm px-3 py-2 rounded-lg border border-slate-250 bg-white" placeholder="PC/JTP/305/2026" />
+            </div>
+          )}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">{t('encumbranceCertNo')}</label>
             <input type="text" value={rev.encumbranceCertNo || ''} onChange={(e) => updateField('property.revenueRecords.encumbranceCertNo', e.target.value)}
@@ -416,7 +507,6 @@ export default function StepPropertySpecs({ errors = {} }) {
         </div>
       </div>
 
-      {/* 4. Property Site Photos — SRO Required */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <Camera size={18} className="text-emerald-700" />
@@ -442,18 +532,19 @@ export default function StepPropertySpecs({ errors = {} }) {
             aspect="landscape"
             sizeHint="Optional"
           />
-          <PhotoUploadField
-            label={t('structurePhoto')}
-            subLabel={t('optionalDeedPage')}
-            value={photos.structurePhoto || ''}
-            onChange={(v) => updateField('property.photos.structurePhoto', v)}
-            aspect="landscape"
-            sizeHint="Optional if built-up"
-          />
+          {!vis.showFarmLandDetails && (
+            <PhotoUploadField
+              label={t('structurePhoto')}
+              subLabel={t('optionalDeedPage')}
+              value={photos.structurePhoto || ''}
+              onChange={(v) => updateField('property.photos.structurePhoto', v)}
+              aspect="landscape"
+              sizeHint="Optional if built-up"
+            />
+          )}
         </div>
       </div>
 
-      {/* 5. Directional Boundaries Matrix */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
           <Compass size={18} className="text-emerald-700" />
@@ -461,9 +552,7 @@ export default function StepPropertySpecs({ errors = {} }) {
             {t('boundariesMatrix')}
           </h3>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* East */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               {t('eastBoundary')} <span className="text-red-500">*</span>
@@ -479,8 +568,6 @@ export default function StepPropertySpecs({ errors = {} }) {
             />
             {errors.east && <p className="text-[10px] text-red-655 mt-1">{errors.east}</p>}
           </div>
-
-          {/* West */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               {t('westBoundary')} <span className="text-red-500">*</span>
@@ -497,9 +584,7 @@ export default function StepPropertySpecs({ errors = {} }) {
             {errors.west && <p className="text-[10px] text-red-655 mt-1">{errors.west}</p>}
           </div>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* North */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               {t('northBoundary')} <span className="text-red-500">*</span>
@@ -515,8 +600,6 @@ export default function StepPropertySpecs({ errors = {} }) {
             />
             {errors.north && <p className="text-[10px] text-red-655 mt-1">{errors.north}</p>}
           </div>
-
-          {/* South */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               {t('southBoundary')} <span className="text-red-500">*</span>

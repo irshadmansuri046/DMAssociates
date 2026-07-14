@@ -1,20 +1,21 @@
 import React from 'react';
-import { GOVT, govPageShell } from './styles';
+import { GOVT, DEED, govPageShell } from './styles';
 import { APP_NAME, WATERMARK_TEXT } from '../../constants/version';
 import { toGuDigits } from '../../utils/aalekhDocumentUtils';
 
 /** Centered Gujarati page number — matches scanned govt deed (no modern Doc No header). */
-export function GovPageNumber({ n }) {
+export function GovPageNumber({ n, tokens = GOVT }) {
   if (n == null) return null;
   return (
     <div
       style={{
         textAlign: 'center',
-        fontSize: GOVT.fontSize,
+        fontSize: tokens.fontSizePageNum || tokens.fontSize,
         fontWeight: 700,
-        marginBottom: '10px',
-        lineHeight: 1.2,
+        marginBottom: '8px',
+        lineHeight: 1.3,
         flexShrink: 0,
+        fontFamily: tokens.fontFamily,
       }}
     >
       {toGuDigits(n)}
@@ -22,18 +23,19 @@ export function GovPageNumber({ n }) {
   );
 }
 
-function BrandPageFooter({ compact = false }) {
+function BrandPageFooter({ compact = false, tokens = GOVT }) {
   return (
     <div
       style={{
-        marginTop: compact ? '8px' : '12px',
-        paddingTop: '10px',
+        marginTop: compact ? '6px' : '10px',
+        paddingTop: '8px',
         flexShrink: 0,
         textAlign: 'center',
-        fontSize: '8.5pt',
+        fontSize: tokens.fontSizeBrand || '8.5pt',
         color: '#4b5563',
         borderTop: '0.5px solid #d1d5db',
-        lineHeight: 1.4,
+        lineHeight: 1.35,
+        fontFamily: tokens.fontFamily,
       }}
     >
       Created by : {APP_NAME}
@@ -43,18 +45,28 @@ function BrandPageFooter({ compact = false }) {
 
 /**
  * Government-style A4 page — wide margins, light watermark.
+ * Pass `tokens={DEED}` for Farm/Plot finalized typography.
  * Pass `footer` to pin a signature strip above the brand page footer.
  */
-export function GovPage({ pageNum, children, footer = null, style }) {
+export function GovPage({ pageNum, children, footer = null, style, tokens = GOVT, fixedHeight = false }) {
+  const T = tokens || GOVT;
+  const useDeed = T === DEED || T?.fontSize === DEED.fontSize;
   return (
     <div
       style={{
-        ...govPageShell(style),
+        ...govPageShell(style, T),
         display: 'flex',
         flexDirection: 'column',
-        minHeight: GOVT.pageHeight,
+        ...(fixedHeight
+          ? {
+              height: T.pageHeight,
+              minHeight: T.pageHeight,
+              maxHeight: T.pageHeight,
+              overflow: 'hidden',
+            }
+          : { minHeight: T.pageHeight }),
       }}
-      className="gov-doc-page govt-sale-deed-page"
+      className={`gov-doc-page govt-sale-deed-page${useDeed ? ' deed-typo-page' : ''}`}
     >
       <div
         aria-hidden
@@ -72,8 +84,8 @@ export function GovPage({ pageNum, children, footer = null, style }) {
         <div
           style={{
             transform: 'rotate(-32deg)',
-            opacity: 0.05,
-            fontSize: '22pt',
+            opacity: 0.04,
+            fontSize: '20pt',
             fontWeight: 700,
             letterSpacing: '1.5px',
             color: '#111827',
@@ -92,16 +104,19 @@ export function GovPage({ pageNum, children, footer = null, style }) {
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
+          height: fixedHeight ? '100%' : undefined,
         }}
       >
-        <GovPageNumber n={pageNum} />
+        <GovPageNumber n={pageNum} tokens={T} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-          <div style={{ flex: '1 1 auto' }}>{children}</div>
+          <div style={{ flex: '1 1 auto', minHeight: 0, overflow: fixedHeight ? 'hidden' : undefined }}>
+            {children}
+          </div>
           <div style={{ marginTop: 'auto', flexShrink: 0 }}>
             {footer ? (
-              <div style={{ marginTop: '16px', paddingTop: '8px' }}>{footer}</div>
+              <div style={{ marginTop: '12px', paddingTop: '6px' }}>{footer}</div>
             ) : null}
-            <BrandPageFooter compact={Boolean(footer)} />
+            <BrandPageFooter compact={Boolean(footer)} tokens={T} />
           </div>
         </div>
       </div>
@@ -110,7 +125,8 @@ export function GovPage({ pageNum, children, footer = null, style }) {
 }
 
 /** Bottom signature strip like the scanned deed (sellers left / buyer-company right). */
-export function GovSignatureStrip({ sellers = [], buyers = [] }) {
+export function GovSignatureStrip({ sellers = [], buyers = [], tokens = GOVT }) {
+  const T = tokens || GOVT;
   const seller = sellers[0];
   const buyer = buyers[0];
   return (
@@ -120,8 +136,9 @@ export function GovSignatureStrip({ sellers = [], buyers = [] }) {
         justifyContent: 'space-between',
         gap: '24px',
         marginTop: 0,
-        fontSize: GOVT.fontSizeSmall,
+        fontSize: T.fontSizeSmall,
         lineHeight: 1.45,
+        fontFamily: T.fontFamily,
       }}
     >
       <div style={{ flex: 1 }}>

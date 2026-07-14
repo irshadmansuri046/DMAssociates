@@ -18,13 +18,54 @@
   overflow-wrap: anywhere;
 }
 
-/* Government sale-deed pages — match scanned SRO deed spacing */
+/* Government sale-deed pages */
 .govt-sale-deed-page {
   font-family: "Noto Sans Gujarati", "Shruti", "Nirmala UI", sans-serif !important;
 }
 .govt-sale-deed-page p {
   orphans: 3;
   widows: 3;
+}
+
+/* Finalized deed typography (Farm Land + Plot Government Style) */
+.deed-typo-page,
+.deed-typo-page p,
+.deed-typo-page td,
+.deed-typo-page th,
+.farm-land-deed-page,
+.farm-land-deed-page p,
+.farm-land-deed-page td,
+.farm-land-deed-page th,
+.farm-form-no1 {
+  font-family: "Noto Serif Gujarati", "Noto Sans Gujarati", "Shruti", "Nirmala UI", serif !important;
+}
+
+.farm-land-deed-page p,
+.deed-typo-page p {
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+}
+
+/* Farm-land / Form No.1: keep Gujarati intact (overflow-wrap:anywhere → vertical strip / “stretch”) */
+.farm-summary-footer > tbody > tr > td,
+.farm-land-deed-page .deed-pdf-table > tbody > tr > td,
+.farm-land-deed-page .deed-pdf-table > thead > tr > th,
+.deed-typo-page .deed-pdf-table > tbody > tr > td,
+.deed-typo-page .deed-pdf-table > thead > tr > th,
+.farm-form-no1 .deed-pdf-table > tbody > tr > td,
+.farm-form-no1 .deed-pdf-table > thead > tr > th {
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  height: auto !important;
+}
+
+.farm-form-no1 .deed-pdf-table > tbody > tr > td,
+.farm-form-no1 .deed-pdf-table > thead > tr > th {
+  vertical-align: top !important;
+}
+
+.farm-summary-footer > tbody > tr > td {
+  vertical-align: middle !important;
 }
 
 :root {

@@ -16,8 +16,10 @@ export default function StepPartyDetails({ errors = {} }) {
 
   const sellers = formData.parties.sellers || [];
   const buyers = formData.parties.buyers || [];
+  const confirmers = formData.parties.confirmers || [];
   const firstTitle = roles.first[locale] || roles.first.en;
   const secondTitle = roles.second[locale] || roles.second.en;
+  const isFarmLand = formData.documentType === 'sale_deed_farm_land';
 
   const handleAddSeller = () => {
     addListItem('parties.sellers', defaultPartyFields());
@@ -25,6 +27,10 @@ export default function StepPartyDetails({ errors = {} }) {
 
   const handleAddBuyer = () => {
     addListItem('parties.buyers', defaultPartyFields());
+  };
+
+  const handleAddConfirmer = () => {
+    addListItem('parties.confirmers', defaultPartyFields());
   };
 
   const renderPartyInputs = (type, list, addFn, removeFn, title, addBtnLabel) => {
@@ -59,7 +65,7 @@ export default function StepPartyDetails({ errors = {} }) {
 
           return (
             <div key={index} className="relative p-3 sm:p-5 bg-slate-50/50 rounded-xl border border-slate-200 space-y-4 overflow-hidden">
-              {list.length > 1 && (
+              {list.length > 1 || type === 'confirmers' ? (
                 <button
                   onClick={() => removeFn(`parties.${type}`, index)}
                   type="button"
@@ -68,7 +74,7 @@ export default function StepPartyDetails({ errors = {} }) {
                 >
                   <Trash2 size={16} />
                 </button>
-              )}
+              ) : null}
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pr-8 sm:pr-0">
                 <div className="text-xs font-bold text-slate-400">
@@ -437,6 +443,23 @@ export default function StepPartyDetails({ errors = {} }) {
             <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs font-semibold text-red-800">{errors.buyers}</div>
           )}
           {renderPartyInputs('buyers', buyers, handleAddBuyer, removeListItem, secondTitle, t('addParty'))}
+        </>
+      )}
+
+      {isFarmLand && (
+        <>
+          <div className="border-t border-slate-100 my-2" />
+          {renderPartyInputs(
+            'confirmers',
+            confirmers,
+            handleAddConfirmer,
+            removeListItem,
+            t('confirmers'),
+            t('addConfirmer')
+          )}
+          {confirmers.length === 0 && (
+            <p className="text-xs text-slate-400 italic text-center py-2 m-0">{t('noConfirmers')}</p>
+          )}
         </>
       )}
 

@@ -8,7 +8,7 @@ import { remoteSaveInvoice } from './supabaseDocuments';
  */
 export async function savePlatformInvoice({
   payment,
-  documentType = 'sale_deed',
+  documentType = 'sale_deed_flat',
   documentId = null,
   user = getSessionUser(),
 } = {}) {

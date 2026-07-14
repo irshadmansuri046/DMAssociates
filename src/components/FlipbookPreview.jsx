@@ -96,6 +96,7 @@ export default function FlipbookPreview() {
                   <div>Taluka: <span className="font-bold text-slate-900">{s.taluka || '_______'}</span></div>
                   <div>SRO Office: <span className="font-bold text-slate-900">{s.subRegistrarOffice || '_______'}</span></div>
                   <div>Village: <span className="font-bold text-slate-900">{s.village || '_______'}</span></div>
+                  <div>Moje / Mouza: <span className="font-bold text-slate-900">{s.moje || s.village || '_______'}</span></div>
                 </div>
               </div>
             )}

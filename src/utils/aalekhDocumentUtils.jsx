@@ -143,12 +143,20 @@ export function CellInner({ children, style = {} }) {
   );
 }
 
+/** Prefer explicit Moje/Mouza; otherwise Village / City (legacy drafts). */
+export function resolveMoje(property = {}) {
+  const moje = String(property.moje || '').trim();
+  if (moje) return moje;
+  return String(property.village || '').trim();
+}
+
 /** Extract normalized property snapshot from form data */
 export function getPropertySnapshot(data) {
   const s = data.property || {};
   const district = s.district || '_______________';
   const taluka = s.taluka || district;
   const village = s.village || '_______________';
+  const moje = resolveMoje(s) || '_______________';
   const complexName = s.complexName?.trim() || s.siteName?.trim() || village;
   const unitNo = s.unitNumber?.trim() || '___';
   const carpet = s.carpetArea || s.constructionArea || s.totalPlotArea || '___';
@@ -163,6 +171,7 @@ export function getPropertySnapshot(data) {
     district,
     taluka,
     village,
+    moje,
     complexName,
     unitNo: toGuDigits(unitNo),
     carpet: toGuDigits(carpet),
@@ -200,7 +209,7 @@ export function buildParishishtaText(data) {
   const unitPart = snap.unitNoRaw ? `નંબર ${toGuDigits(snap.unitNoRaw)}` : 'નંબર _______';
 
   return (
-    `જિલ્લા-${snap.district}, તાલુકા-${snap.taluka}, મોજે-${snap.village} ની ${snap.surveyLine} ની ` +
+    `જિલ્લા-${snap.district}, તાલુકા-${snap.taluka}, મોજે-${snap.moje} ની ${snap.surveyLine} ની ` +
     `બિનખેતી (NA) જમીન પર આવેલ "${snap.complexName}" શોપિંગ કોમ્પ્લેક્ષ અને રહેઠાણ મકાનોના` +
     `${towerPart}${floorPart}${unitPart} ની મિલકત, જેનો કાર્પેટ એરિયા ${snap.carpet} ચો.મી. છે, ` +
     `યુનીટ પ્રોપર્ટી કાર્ડ નંબર ${snap.unitCard} સાથે, ` +
@@ -229,7 +238,7 @@ export function PropertySummaryTable({ data }) {
     >
       <tbody>
         <tr>
-          {td('ગામનું નામ', { fontWeight: 'bold', width: '14%' })}
+          {td('મોજે / ગામ', { fontWeight: 'bold', width: '14%' })}
           {td('સર્વે નંબર', { fontWeight: 'bold', width: '22%' })}
           {td('કોમ્પલેક્ષનું નામ :', { fontWeight: 'bold', width: '18%' })}
           {td('નંબર :', { fontWeight: 'bold', width: '8%' })}
@@ -237,7 +246,7 @@ export function PropertySummaryTable({ data }) {
           {td('વરાડેનું ક્ષેત્રફળ :', { fontWeight: 'bold', width: '18%' })}
         </tr>
         <tr>
-          {td(`તા.જી. ${snap.district}.`)}
+          {td(`મોજે ${snap.moje}, તા.જી. ${snap.district}.`)}
           {td(snap.surveyLine, { fontSize: AALEKH.fontSizeTiny })}
           {td(snap.complexName)}
           {td(snap.unitNo)}

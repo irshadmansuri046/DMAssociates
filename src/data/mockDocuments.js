@@ -10,6 +10,7 @@ function propertyBase(locale) {
       taluka: 'જેતપુર',
       subRegistrarOffice: 'જેતપુર-૧ (રાજકોટ)',
       village: 'જેતપુર',
+      moje: 'જેતપુર',
       blockSurveyNo: '૩૦૫/પૈકી ૨',
       oldSurveyNo: 'જુનો રેવન્યુ સર્વે ૧૨૪',
       newCitySurveyNo: 'સીએસ-૪૮૨૯',
@@ -64,6 +65,7 @@ function propertyBase(locale) {
     taluka: 'Jetpur',
     subRegistrarOffice: 'Jetpur-1 (Rajkot)',
     village: 'Jetpur',
+    moje: 'Jetpur',
     blockSurveyNo: '305/p2',
     oldSurveyNo: 'Old Revenue Survey 124',
     newCitySurveyNo: 'CS-4829',
@@ -365,6 +367,142 @@ function titleHistory(locale) {
   ];
 }
 
+/** Farm land mock — aligned with Original/farm_land_sale_deed.pdf sample */
+function farmPropertyBase(locale) {
+  if (locale === 'gu') {
+    return {
+      propertyType: 'agricultural',
+      district: 'સાબરકાંઠા',
+      taluka: 'હિંમતનગર',
+      subDistrict: 'હિંમતનગર',
+      subRegistrarOffice: 'હિંમતનગર',
+      village: 'લોલાસણ',
+      moje: 'લોલાસણ',
+      khataNo: '621',
+      blockSurveyNo: '504',
+      oldSurveyNo: '328',
+      totalAreaHeAreSqm: '1-86-73',
+      soldAreaHeAreSqm: '0-37-73',
+      soldDirection: 'પશ્ચિમ',
+      aakar: '7.85',
+      tenureType: 'old_tenure',
+      totalPlotArea: '3773',
+      unitType: '',
+      isBuiltUp: false,
+      complexName: '',
+      siteName: '',
+      tower: '',
+      floor: '',
+      unitNumber: '',
+      unitCardNo: '',
+      boundaries: {
+        east: 'સર્વે નં. ૫૦૪ ની બાકી ખેતીલાયક જમીન',
+        west: 'સર્વે નં. ૫૭ ની ખેતીલાયક જમીન',
+        north: 'સર્વે નં. ૫૦૩ ની ખેતીલાયક જમીન',
+        south: 'સર્વે નં. ૫૧૩ અને ૫૧૨ ની ખેતીલાયક જમીન',
+      },
+      jantriValue: '100000',
+      revenueRecords: {
+        extract712No: '712/LOL/504/2026',
+        extract712Date: '2026-06-01',
+        khata8ANo: '621',
+        mutationEntryNo: '1845',
+        mutationDate: '2026-04-25',
+        propertyCardNo: '',
+        encumbranceCertNo: 'EC/LOL/504/2026',
+        encumbranceCertDate: '2026-06-15',
+      },
+      photos: { sitePhoto: '', boundaryPhoto: '', structurePhoto: '' },
+    };
+  }
+  return {
+    propertyType: 'agricultural',
+    district: 'Sabarkantha',
+    taluka: 'Himatnagar',
+    subDistrict: 'Himatnagar',
+    subRegistrarOffice: 'Himatnagar',
+    village: 'Lolasna',
+    moje: 'Lolasna',
+    khataNo: '621',
+    blockSurveyNo: '504',
+    oldSurveyNo: '328',
+    totalAreaHeAreSqm: '1-86-73',
+    soldAreaHeAreSqm: '0-37-73',
+    soldDirection: 'West',
+    aakar: '7.85',
+    tenureType: 'old_tenure',
+    totalPlotArea: '3773',
+    unitType: '',
+    isBuiltUp: false,
+    complexName: '',
+    siteName: '',
+    tower: '',
+    floor: '',
+    unitNumber: '',
+    unitCardNo: '',
+    boundaries: {
+      east: 'Remaining agricultural land of Survey No. 504',
+      west: 'Agricultural land of Survey No. 57',
+      north: 'Agricultural land of Survey No. 503',
+      south: 'Agricultural land of Survey Nos. 513 and 512',
+    },
+    jantriValue: '100000',
+    revenueRecords: {
+      extract712No: '712/LOL/504/2026',
+      extract712Date: '2026-06-01',
+      khata8ANo: '621',
+      mutationEntryNo: '1845',
+      mutationDate: '2026-04-25',
+      propertyCardNo: '',
+      encumbranceCertNo: 'EC/LOL/504/2026',
+      encumbranceCertDate: '2026-06-15',
+    },
+    photos: { sitePhoto: '', boundaryPhoto: '', structurePhoto: '' },
+  };
+}
+
+function farmTitleHistory(locale) {
+  if (locale === 'gu') {
+    return [
+      {
+        entryNo: '૧૨૦૧',
+        date: '1998-05-12',
+        description:
+          'ગામ નમુના નં. ૬ મુજબ સર્વે નં. ૩૨૮ ની જમીન પટેલ પુંજીરામ પરશોત્તમભાઈના નામે નોંધાયેલ.',
+      },
+      {
+        entryNo: '૧૫૬૦',
+        date: '2010-09-18',
+        description:
+          'વારસાઈ / વહેંચણી નોંધથી પટેલ મુકેશભાઈ પુંજાભાઈ અને અન્યના નામે હક્ક નોંધાયો.',
+      },
+      {
+        entryNo: '૧૮૪૫',
+        date: '2026-04-25',
+        description:
+          'નવીન સર્વે / બ્લોક નં. ૫૦૪ (જુનો : ૩૨૮) મુજબ ખાતા નં. ૬૨૧ માં હક્ક સ્પષ્ટ થયેલ.',
+      },
+    ];
+  }
+  return [
+    {
+      entryNo: '1201',
+      date: '1998-05-12',
+      description: 'Village Form 6: Survey No. 328 recorded in name of Patel Punjiram Parshotambhai.',
+    },
+    {
+      entryNo: '1560',
+      date: '2010-09-18',
+      description: 'Succession/partition mutation in favour of Patel Mukeshbhai Punjabhai and others.',
+    },
+    {
+      entryNo: '1845',
+      date: '2026-04-25',
+      description: 'New Survey/Block No. 504 (Old: 328) clarified under Khata No. 621.',
+    },
+  ];
+}
+
 function complianceFor(req) {
   const c = defaultCompliance();
   for (const key of req.complianceKeys) {
@@ -581,7 +719,84 @@ function typeOverlay(documentType, locale, templateId = 'builder') {
         },
       };
 
+    case 'sale_deed_farm_land':
+      return {
+        parties: {
+          sellers: [
+            {
+              ...p('individualSeller'),
+              name: locale === 'gu' ? 'પટેલ મુકેશભાઈ પુંજાભાઈ' : 'Patel Mukeshbhai Punjabhai',
+              age: '48',
+              occupation: locale === 'gu' ? 'ખેતી' : 'Agriculture',
+              religion: locale === 'gu' ? 'હિન્દુ' : 'Hindu',
+              address: locale === 'gu' ? 'મુ.પો. લોલાસણ, તા. હિંમતનગર, જિ. સાબરકાંઠા' : 'At & Po. Lolasna, Tal. Himatnagar, Dist. Sabarkantha',
+            },
+            {
+              ...p('individualSeller'),
+              name: locale === 'gu' ? 'પટેલ સુરેશભાઈ પુંજાભાઈ' : 'Patel Sureshbhai Punjabhai',
+              age: '45',
+              occupation: locale === 'gu' ? 'ખેતી' : 'Agriculture',
+              religion: locale === 'gu' ? 'હિન્દુ' : 'Hindu',
+              address: locale === 'gu' ? 'મુ.પો. લોલાસણ, તા. હિંમતનગર, જિ. સાબરકાંઠા' : 'At & Po. Lolasna, Tal. Himatnagar, Dist. Sabarkantha',
+            },
+          ],
+          buyers: [
+            {
+              ...p('individualBuyer'),
+              name: locale === 'gu' ? 'પટેલ અમિતભાઈ કાંતિભાઈ' : 'Patel Amitbhai Kantibhai',
+              age: '35',
+              occupation: locale === 'gu' ? 'ખેતી' : 'Agriculture',
+              religion: locale === 'gu' ? 'હિન્દુ' : 'Hindu',
+              address: locale === 'gu' ? 'મુ.પો. લોલાસણ, તા. હિંમતનગર, જિ. સાબરકાંઠા' : 'At & Po. Lolasna, Tal. Himatnagar, Dist. Sabarkantha',
+            },
+            {
+              ...p('individualBuyer'),
+              name: locale === 'gu' ? 'પટેલ કિરણભાઈ કાંતિભાઈ' : 'Patel Kiranbhai Kantibhai',
+              age: '32',
+              occupation: locale === 'gu' ? 'ખેતી' : 'Agriculture',
+              religion: locale === 'gu' ? 'હિન્દુ' : 'Hindu',
+              address: locale === 'gu' ? 'મુ.પો. લોલાસણ, તા. હિંમતનગર, જિ. સાબરકાંઠા' : 'At & Po. Lolasna, Tal. Himatnagar, Dist. Sabarkantha',
+            },
+          ],
+          confirmers: [
+            {
+              ...p('coOwner1'),
+              name: locale === 'gu' ? 'પટેલ કાંતિભાઈ ખેમાભાઈ' : 'Patel Kantibhai Khemabhai',
+              age: '42',
+              occupation: locale === 'gu' ? 'ખેતી' : 'Agriculture',
+              religion: locale === 'gu' ? 'હિન્દુ' : 'Hindu',
+              address: locale === 'gu' ? 'મુ.પો. લોલાસણ, તા. હિંમતનગર' : 'At & Po. Lolasna, Tal. Himatnagar',
+            },
+          ],
+        },
+        instrument,
+        transaction: {
+          totalSaleAmount: '100000',
+          paymentMode: 'Cash',
+          payments: [
+            {
+              mode: 'Cash',
+              bankName: '',
+              branchName: '',
+              instrumentNo: '',
+              date: '2026-07-13',
+              amount: '100000',
+            },
+          ],
+          stampDutyReceiptNo: 'GRAS-SD-FARM-2026-01',
+          stampDutyAmount: '4900',
+          registrationFeeReceiptNo: 'GRAS-RF-FARM-2026-01',
+          registrationFeeAmount: '1000',
+          tdsChallanNo: '',
+          tdsForm26QB: '',
+          tdsPaidDate: '',
+        },
+      };
+
     case 'sale_deed':
+    case 'sale_deed_flat':
+    case 'sale_deed_house':
+    case 'sale_deed_plot':
     default:
       return {
         parties: {
@@ -625,24 +840,33 @@ function typeOverlay(documentType, locale, templateId = 'builder') {
 /**
  * Build mock form data for the currently selected document type + template + UI language.
  */
-export function buildMockDocument({ documentType = 'sale_deed', templateId = 'builder', locale = 'en' } = {}) {
+export function buildMockDocument({ documentType = 'sale_deed_flat', templateId = 'builder', locale = 'en' } = {}) {
   const lang = locale === 'gu' ? 'gu' : 'en';
   const req = getDocumentRequirements(documentType);
   const overlay = typeOverlay(documentType, lang, templateId);
+  const isFarm = documentType === 'sale_deed_farm_land';
 
   return {
     documentType,
-    templateId,
+    templateId: isFarm && templateId === 'builder' ? 'government' : templateId,
     locale: lang,
     parties: overlay.parties,
-    property: propertyBase(lang),
-    titleHistory: req.showTitleHistory ? titleHistory(lang) : [],
+    property: isFarm ? farmPropertyBase(lang) : propertyBase(lang),
+    titleHistory: req.showTitleHistory
+      ? (isFarm ? farmTitleHistory(lang) : titleHistory(lang))
+      : [],
     transaction: overlay.transaction,
     instrument: overlay.instrument,
     compliance: complianceFor(req),
     witnesses: witnesses(lang),
     identifier: identifier(lang),
-    execution: execution(lang, req.requireGarvi),
+    execution: {
+      ...execution(lang, req.requireGarvi),
+      executionPlace: isFarm
+        ? (lang === 'gu' ? 'હિંમતનગર' : 'Himatnagar')
+        : execution(lang, req.requireGarvi).executionPlace,
+      executionDate: isFarm ? '2026-07-13' : execution(lang, req.requireGarvi).executionDate,
+    },
   };
 }
 

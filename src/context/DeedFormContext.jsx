@@ -7,19 +7,27 @@ import { userDraftKey } from '../services/authService';
 const DeedFormContext = createContext();
 
 const defaultState = {
-  documentType: 'sale_deed',
+  documentType: 'sale_deed_flat',
   templateId: DEFAULT_TEMPLATE_ID,
   locale: 'gu',
   parties: {
     sellers: [defaultPartyFields()],
-    buyers: [defaultPartyFields()]
+    buyers: [defaultPartyFields()],
+    confirmers: [],
   },
   property: {
-    propertyType: "na_land",
+    propertyType: "flat",
     district: "",
     taluka: "",
     subRegistrarOffice: "",
     village: "",
+    moje: "",
+    subDistrict: "",
+    khataNo: "",
+    totalAreaHeAreSqm: "",
+    soldAreaHeAreSqm: "",
+    soldDirection: "",
+    aakar: "",
     districtId: "",
     talukaId: "",
     placeId: "",
@@ -153,7 +161,13 @@ export const DeedFormProvider = ({ children }) => {
         ...defaultState,
         ...parsed,
         instrument: { ...defaultState.instrument, ...(parsed.instrument || {}) },
-        parties: parsed.parties || defaultState.parties,
+        parties: {
+          ...defaultState.parties,
+          ...(parsed.parties || {}),
+          sellers: parsed.parties?.sellers || defaultState.parties.sellers,
+          buyers: parsed.parties?.buyers || defaultState.parties.buyers,
+          confirmers: parsed.parties?.confirmers || [],
+        },
         property: { ...defaultState.property, ...(parsed.property || {}) },
         transaction: { ...defaultState.transaction, ...(parsed.transaction || {}) },
         compliance: { ...defaultState.compliance, ...(parsed.compliance || {}) },
@@ -199,15 +213,20 @@ export const DeedFormProvider = ({ children }) => {
       const keys = path.split('.');
       const newData = JSON.parse(JSON.stringify(prev));
       let current = newData;
-      
+
       for (let i = 0; i < keys.length - 1; i++) {
-        current = current[keys[i]];
+        const key = keys[i];
+        if (current[key] == null || typeof current[key] !== 'object') {
+          current[key] = {};
+        }
+        current = current[key];
       }
-      
-      const list = current[keys[keys.length - 1]];
-      if (Array.isArray(list)) {
-        list.push(defaultItem);
+
+      const lastKey = keys[keys.length - 1];
+      if (!Array.isArray(current[lastKey])) {
+        current[lastKey] = [];
       }
+      current[lastKey].push(defaultItem);
       return newData;
     });
   };
@@ -238,7 +257,7 @@ export const DeedFormProvider = ({ children }) => {
   const loadMockData = (lang = 'en') => {
     setFormData((prev) =>
       buildMockDocument({
-        documentType: prev.documentType || 'sale_deed',
+        documentType: prev.documentType || 'sale_deed_flat',
         templateId: prev.templateId || DEFAULT_TEMPLATE_ID,
         locale: lang === 'gu' ? 'gu' : 'en',
       })
